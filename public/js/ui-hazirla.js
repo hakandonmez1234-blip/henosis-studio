@@ -157,7 +157,7 @@ function renderHazirla(){
         <textarea id="brief-textarea" class="inp"
           placeholder="${S.promptFocus==='director'
             ? '40 pandomim sanatçısı şapkayı takmış, stüdyoda, karşıdan çekim, pro reklam. İstediğin kadar detay ver — sahneyi, kişileri, atmosferi, tonu...'
-            : 'Ürünü anlat. Renkleri mutlaka yaz! Sahneyi sezgisel anlat — kız gibiydi saçları uzundu bile olsa yaz...'}"
+            : 'Örnek: Pembe kutu şampuan, minimalist beyaz stüdyo, sabah ışığı, ürün odaklı çekim, marka: HairCare Pro...'}"
           oninput="S.conceptBrief=this.value;saveDB()"
           onblur="triggerMemorySearch(this.value)"
           style="min-height:${S.promptFocus==='director'?'120':'100'}px;font-size:15px;padding-right:44px">${h(S.conceptBrief)}</textarea>
