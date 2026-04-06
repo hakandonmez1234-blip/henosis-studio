@@ -154,11 +154,15 @@ function render(){
       </button>
       <div class="hdr-db ${dbSyncing?'syncing':''}"><i data-lucide="database" style="margin-right:4px"></i>${S.dbStatus}</div>
       <div class="hdr-cost"><i data-lucide="coins" style="margin-right:4px"></i>$${S.totalSpent.toFixed(2)}</div>
-      ${window._hnsUserEmail?`<div style="display:flex;align-items:center;gap:8px;padding:4px 12px;background:var(--bg-elev);border-radius:var(--rad-pill);border:1px solid var(--brd)">
+      ${(()=>{
+        const userJson = localStorage.getItem('hns_user');
+        const userEmail = userJson ? JSON.parse(userJson).email : '';
+        return userEmail ? `<div style="display:flex;align-items:center;gap:8px;padding:4px 12px;background:var(--bg-elev);border-radius:var(--rad-pill);border:1px solid var(--brd)">
         <i data-lucide="user" class="icon-xs"></i>
-        <span style="font-size:11px;color:var(--tx-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${window._hnsUserEmail}</span>
-        <button onclick="typeof doLogout==='function'&&doLogout()" style="background:none;border:none;cursor:pointer;color:var(--tx-muted);padding:0;font-family:inherit;display:flex;align-items:center" title="Çıkış yap"><i data-lucide="log-out" class="icon-xs"></i></button>
-      </div>`:''}
+        <span style="font-size:11px;color:var(--tx-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${userEmail}</span>
+        <button onclick="window.doLogout()" style="background:none;border:none;cursor:pointer;color:var(--tx-muted);padding:0;font-family:inherit;display:flex;align-items:center" title="Çıkış yap"><i data-lucide="log-out" class="icon-xs"></i></button>
+      </div>` : '';
+      })()}
     </div>
   </div>`;
 
