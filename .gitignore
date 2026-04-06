@@ -1,0 +1,7 @@
+node_modules/
+.env
+data/
+hafiza.json
+hafiza-gallery.json
+hafiza-queue.json
+hafiza-learning.json

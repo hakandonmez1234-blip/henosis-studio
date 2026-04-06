@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#2C2D32">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Henosis Studio">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23B85C1E'/><path d='M50,14 C34,10 18,19 16,36 C14,53 22,72 36,80 C48,87 64,83 72,70 C80,57 78,36 70,23 C64,13 58,16 50,14 Z' fill='none' stroke='rgba(255,255,255,0.92)' stroke-width='3.5'/><path d='M68,22 C57,17 43,23 40,38 C37,53 43,72 57,80 C68,86 82,81 86,68 C90,55 87,35 80,22 C75,14 73,27 68,22 Z' fill='none' stroke='rgba(255,255,255,0.92)' stroke-width='2.8'/></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23B85C1E'/><path d='M50,14 C34,10 18,19 16,36 C14,53 22,72 36,80 C48,87 64,83 72,70 C80,57 78,36 70,23 C64,13 58,16 50,14 Z' fill='none' stroke='rgba(255,255,255,0.92)' stroke-width='3.5'/><path d='M68,22 C57,17 43,23 40,38 C37,53 43,72 57,80 C68,86 82,81 86,68 C90,55 87,35 80,22 C75,14 73,27 68,22 Z' fill='none' stroke='rgba(255,255,255,0.92)' stroke-width='2.8'/></svg>">
+<title>Henosis Studio</title>
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+<div id="app">
+  <div style="height:100vh;display:flex;align-items:center;justify-content:center;color:var(--tx-muted)">
+    Yükleniyor...
+  </div>
+</div>
+<div class="toast" id="toast" style="position:fixed;bottom:30px;right:30px;padding:14px 24px;background:var(--bg-elevated);border-radius:16px;font-size:13px;font-weight:600;color:var(--tx-main);z-index:200;opacity:0;transform:translateY(20px);transition:all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);box-shadow:var(--shadow-soft)"></div>
+
+<script src="js/config-models.js"></script>
+<script src="js/config-prompts.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/state.js"></script>
+<script src="js/api.js"></script>
+<script src="js/logic-learn.js"></script>
+<script src="js/logic-prompts.js"></script>
+<script src="js/logic-queue.js"></script>
+<script src="js/logic-video-edit.js"></script>
+<script src="js/logic-projects.js"></script>
+<script src="js/ui-video.js?v=3"></script>
+<script src="js/ui-hazirla.js?v=4"></script>
+<script src="js/ui-studyo.js?v=3"></script>
+<script src="js/ui-queue.js?v=3"></script>
+<script src="js/ui-gallery.js?v=3"></script>
+<script src="js/ui-learn.js?v=3"></script>
+<script src="js/ui-settings.js?v=3"></script>
+<script src="js/ui-core.js?v=3"></script>
+<script>
+  // Supabase auth + otomatik token yenileme
+  (function(){
+    const SUPABASE_URL  = 'https://ekvsjeqcjqrlubpzrjbf.supabase.co';  // ← anon key'i de değiştir
+    const SUPABASE_ANON = 'BURAYA_ANON_KEY_YAPISTIR';  // Settings → API → anon/public (eyJ... ile başlar)
+    if(SUPABASE_URL.includes('__')){
+      // Placeholder henüz değiştirilmemiş — local dev modunda devam et
+      if(!S.t2vMdl)S.t2vMdl="kling25t";
+      initApp();
+      return;
+    }
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    // Token yenileme dinleyici
+    sb.auth.onAuthStateChange((event, session) => {
+      if(event === 'TOKEN_REFRESHED' && session){
+        localStorage.setItem('hns_token', session.access_token);
+        localStorage.setItem('hns_refresh', session.refresh_token);
+      }
+      if(event === 'SIGNED_OUT'){
+        localStorage.removeItem('hns_token');
+        localStorage.removeItem('hns_refresh');
+        window.location.href = '/login.html';
+      }
+    });
+    // Refresh token ile oturumu yenile
+    const refresh = localStorage.getItem('hns_refresh');
+    if(refresh){
+      sb.auth.setSession({ access_token: localStorage.getItem('hns_token')||'', refresh_token: refresh })
+        .then(({ data }) => {
+          if(data.session){
+            localStorage.setItem('hns_token', data.session.access_token);
+            localStorage.setItem('hns_refresh', data.session.refresh_token);
+            // Kullanıcı emailini header'a yaz
+            window._hnsUserEmail = data.session.user.email;
+          }
+          if(!S.t2vMdl)S.t2vMdl="kling25t";
+          initApp();
+        })
+        .catch(() => { if(!S.t2vMdl)S.t2vMdl="kling25t"; initApp(); });
+    } else {
+      if(!S.t2vMdl)S.t2vMdl="kling25t";
+      initApp();
+    }
+
+    // Çıkış fonksiyonu — render'dan çağrılır
+    window.doLogout = async function(){
+      await sb.auth.signOut();
+      localStorage.removeItem('hns_token');
+      localStorage.removeItem('hns_refresh');
+      window.location.href = '/login.html';
+    };
+  })();
+</script>
+</body>
+</html>
