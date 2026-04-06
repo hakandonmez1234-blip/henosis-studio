@@ -13,7 +13,7 @@ function _renderActiveProjectRef() {
   if (!S.activeProjectRef) return '';
   var prj = S.activeProjectRef;
   return `<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(212,100,42,0.08);border:1.5px solid rgba(212,100,42,0.35);border-radius:12px;padding:10px 14px">
-    <div style="font-size:16px;flex-shrink:0;margin-top:1px">📁</div>
+    <div style="font-size:16px;flex-shrink:0;margin-top:1px;color:var(--ac-orange)"><i data-lucide="folder-open" style="width:16px;height:16px"></i></div>
     <div style="flex:1;min-width:0">
       <div style="font-size:10px;font-weight:700;color:var(--ac-orange);letter-spacing:0.8px;margin-bottom:2px">AKTİF PROJE REFERANSİ</div>
       <div style="font-size:12px;font-weight:600;color:var(--tx-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h(prj.title)}</div>
@@ -40,7 +40,7 @@ function _renderBriefInterpretation() {
   if (bi.type === 'memory_match' && bi.projectTitle) {
     o += `<div style="background:rgba(74,222,128,0.06);border:1.5px solid rgba(74,222,128,0.3);border-radius:12px;padding:10px 14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <span style="font-size:14px">💡</span>
+        <span style="font-size:14px;color:var(--green)"><i data-lucide="lightbulb" style="width:14px;height:14px"></i></span>
         <span style="font-size:10px;font-weight:700;color:var(--green);letter-spacing:0.8px">HAFIZADAN EŞLEŞTİ</span>
         <span style="font-size:9px;color:var(--tx-muted);margin-left:auto">%${Math.round((bi.confidence||0.7)*100)} benzerlik</span>
       </div>
@@ -59,7 +59,7 @@ function _renderBriefInterpretation() {
   if (bi.interpretation) {
     o += `<div style="background:rgba(90,143,168,0.06);border:1.5px solid rgba(90,143,168,0.3);border-radius:12px;padding:10px 14px">
       <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <span style="font-size:14px">🔮</span>
+        <span style="font-size:14px;color:var(--ac-blue)"><i data-lucide="sparkles" style="width:14px;height:14px"></i></span>
         <span style="font-size:10px;font-weight:700;color:var(--ac-blue);letter-spacing:0.8px">KİŞİSEL BRİEF YORUMLANDI</span>
       </div>
       <div style="font-size:11px;color:var(--tx-muted);line-height:1.5;margin-bottom:10px;font-style:italic">"${h(bi.interpretation)}"</div>
@@ -90,33 +90,33 @@ function _renderMagicPanel(){
   var scored = S.learningData && S.learningData.records ? S.learningData.records.filter(function(r){return r.scores&&(_recordAvg&&_recordAvg(r)>0);}).length : 0;
 
   var badges = '';
-  if (hasProfile) badges += `<div style="font-size:9px;font-weight:700;background:rgba(147,51,234,0.12);color:rgba(147,51,234,0.9);padding:3px 8px;border-radius:99px;border:1px solid rgba(147,51,234,0.2)">KİŞİSEL</div>`;
-  if (learningActive) badges += `<div style="font-size:9px;font-weight:700;background:rgba(147,51,234,0.08);color:rgba(147,51,234,0.7);padding:3px 8px;border-radius:99px;border:1px solid rgba(147,51,234,0.15)">${scored} üretim</div>`;
+  if (hasProfile) badges += `<div style="font-size:9px;font-weight:700;background:rgba(212,100,42,0.08);color:rgba(212,100,42,0.8);padding:3px 8px;border-radius:99px;border:1px solid rgba(212,100,42,0.15)">KİŞİSEL</div>`;
+  if (learningActive) badges += `<div style="font-size:9px;font-weight:700;background:rgba(212,100,42,0.06);color:rgba(212,100,42,0.6);padding:3px 8px;border-radius:99px;border:1px solid rgba(212,100,42,0.12)">${scored} üretim</div>`;
 
-  return `<div style="margin-top:14px;border:1.5px solid rgba(147,51,234,0.3);border-radius:14px;overflow:hidden;background:rgba(147,51,234,0.04)">
+  return `<div style="margin-top:14px;border:1.5px solid rgba(212,100,42,0.18);border-radius:14px;overflow:hidden;background:rgba(212,100,42,0.03);box-shadow:0 2px 8px rgba(0,0,0,0.04)">
     <div style="padding:12px 16px 10px;display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none" onclick="S.magicOpen=!S.magicOpen;render()">
-      <span style="font-size:18px;line-height:1">✨</span>
+      <span style="font-size:18px;line-height:1;display:flex;align-items:center;color:rgba(212,100,42,0.75)"><i data-lucide="wand-2" style="width:18px;height:18px"></i></span>
       <div style="flex:1">
-        <div style="font-size:12px;font-weight:800;color:rgba(174, 175, 171, 0.9);letter-spacing:0.4px">SİHİRLİ PROMPT</div>
+        <div style="font-size:12px;font-weight:800;color:var(--tx-muted);letter-spacing:0.4px">SİHİRLİ PROMPT</div>
         <div style="font-size:10px;color:var(--tx-muted);margin-top:1px">Ürünü gör, içini oku, sana özel yaz</div>
       </div>
       ${badges}
       <span style="font-size:11px;color:var(--tx-muted);transition:transform 0.2s;display:inline-block;transform:rotate(${S.magicOpen?'180':'0'}deg)">▼</span>
     </div>
-    ${S.magicOpen ? `<div style="border-top:1px solid rgba(147,51,234,0.15);padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px">
+    ${S.magicOpen ? `<div style="border-top:1px solid rgba(212,100,42,0.1);padding:14px 16px 16px;display:flex;flex-direction:column;gap:10px">
       ${!hasImg ? `<div style="font-size:11px;color:rgba(212,100,42,0.9);background:rgba(212,100,42,0.08);border:1px solid rgba(212,100,42,0.2);border-radius:9px;padding:8px 12px;text-align:center">
         Sihirli mod için yukarıdan bir ürün görseli yükle
       </div>` : ''}
       ${hasProfile
-        ? `<div style="font-size:10px;color:rgba(0, 0, 0, 0.85);background:rgba(147,51,234,0.06);border:1px solid rgba(147,51,234,0.15);border-radius:9px;padding:9px 12px;line-height:1.6">
-            <span style="font-weight:700;opacity:0.7;letter-spacing:0.3px;font-size:9px">KİŞİSEL PROFİL · </span>${h((S.journal.profile||'').substring(0,160))}…
+        ? `<div style="font-size:10px;color:rgba(0,0,0,0.75);background:rgba(212,100,42,0.05);border:1px solid rgba(212,100,42,0.12);border-radius:9px;padding:9px 12px;line-height:1.6">
+            <span style="font-weight:700;opacity:0.6;letter-spacing:0.3px;font-size:9px;color:rgba(212,100,42,0.8)">KİŞİSEL PROFİL · </span><span style="color:rgba(0,0,0,0.7)">${h((S.journal.profile||'').substring(0,160))}…</span>
            </div>`
         : `<div style="font-size:10px;color:var(--tx-muted);background:var(--bg-elevated);border:1px solid var(--brd);border-radius:9px;padding:9px 12px;line-height:1.5">
             Hafıza sekmesine git → bir günce sorusunu yanıtla → sistem senin yaratıcı dilinle prompt yazar
            </div>`
       }
-      <button onclick="magicPrompt()" ${!hasImg||S.isGenerating?'disabled':''} style="width:100%;padding:15px;border:none;border-radius:12px;background:${hasImg&&!S.isGenerating?'linear-gradient(135deg,rgba(147,51,234,0.9),rgba(109,40,217,0.9))':'var(--bg-cream)'};color:${hasImg&&!S.isGenerating?'#fff':'var(--tx-muted)'};font-size:14px;font-weight:800;cursor:${hasImg&&!S.isGenerating?'pointer':'default'};font-family:inherit;letter-spacing:0.3px;transition:opacity 0.15s" ${hasImg&&!S.isGenerating?'onmouseenter="this.style.opacity=\'0.88\'" onmouseleave="this.style.opacity=\'1\'"':''}>
-        ${S.isGenerating&&S.genPhase?'<span style="display:inline-flex;align-items:center;gap:8px"><span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,0.3)"></span>'+h(S.genPhase)+'</span>':'✨ Yaratıcı Prompt Üret'}
+      <button onclick="magicPrompt()" ${!hasImg||S.isGenerating?'disabled':''} style="width:100%;padding:15px;border:none;border-radius:12px;background:${hasImg&&!S.isGenerating?'linear-gradient(135deg,rgba(212,100,42,0.85),rgba(180,85,35,0.85))':'var(--bg-cream)'};color:${hasImg&&!S.isGenerating?'#fff':'var(--tx-muted)'};font-size:14px;font-weight:800;cursor:${hasImg&&!S.isGenerating?'pointer':'default'};font-family:inherit;letter-spacing:0.3px;transition:opacity 0.15s;box-shadow:${hasImg&&!S.isGenerating?'0 2px 8px rgba(212,100,42,0.25)':'none'}" ${hasImg&&!S.isGenerating?'onmouseenter="this.style.opacity=\'0.9\'" onmouseleave="this.style.opacity=\'1\'"':''}>
+        ${S.isGenerating&&S.genPhase?'<span style="display:inline-flex;align-items:center;gap:8px"><span class="spinner" style="border-top-color:#fff;border-color:rgba(255,255,255,0.3)"></span>'+h(S.genPhase)+'</span>':'<span style="display:flex;align-items:center;gap:6px"><i data-lucide="wand-2" style="width:16px;height:16px"></i> Yaratıcı Prompt Üret</span>'}
       </button>
     </div>` : ''}
   </div>`;
@@ -154,16 +154,17 @@ function renderHazirla(){
       ${_renderActiveProjectRef()}
 
       <div style="position:relative">
-        <textarea class="inp"
+        <textarea id="brief-textarea" class="inp"
           placeholder="${S.promptFocus==='director'
             ? '40 pandomim sanatçısı şapkayı takmış, stüdyoda, karşıdan çekim, pro reklam. İstediğin kadar detay ver — sahneyi, kişileri, atmosferi, tonu...'
             : 'Ürünü anlat. Renkleri mutlaka yaz! Sahneyi sezgisel anlat — kız gibiydi saçları uzundu bile olsa yaz...'}"
-          oninput="S.conceptBrief=this.value;triggerMemorySearch(this.value)"
+          oninput="S.conceptBrief=this.value;saveDB()"
+          onblur="triggerMemorySearch(this.value)"
           style="min-height:${S.promptFocus==='director'?'120':'100'}px;font-size:15px;padding-right:44px">${h(S.conceptBrief)}</textarea>
         <button onclick="S.memModal=true;render()" title="Yaratıcı Hafıza — Geçmiş projelerden ilham al"
-          style="position:absolute;top:8px;right:8px;background:${S.projectMemory&&S.projectMemory.length?'rgba(212,100,42,0.15)':'var(--bg-cream)'};border:1px solid ${S.projectMemory&&S.projectMemory.length?'rgba(212,100,42,0.4)':'var(--brd)'};border-radius:8px;padding:5px 7px;cursor:pointer;font-size:13px;color:${S.projectMemory&&S.projectMemory.length?'var(--ac-orange)':'var(--tx-muted)'};transition:all 0.2s"
+          style="position:absolute;top:8px;right:8px;background:${S.projectMemory&&S.projectMemory.length?'rgba(212,100,42,0.15)':'var(--bg-cream)'};border:1px solid ${S.projectMemory&&S.projectMemory.length?'rgba(212,100,42,0.4)':'var(--brd)'};border-radius:8px;padding:5px 7px;cursor:pointer;font-size:13px;color:${S.projectMemory&&S.projectMemory.length?'var(--ac-orange)':'var(--tx-muted)'};transition:all 0.2s;display:flex;align-items:center;gap:3px"
           onmouseenter="this.style.background='rgba(212,100,42,0.2)'" onmouseleave="this.style.background='${S.projectMemory&&S.projectMemory.length?'rgba(212,100,42,0.15)':'var(--bg-cream)'}'">
-          📁${S.projectMemory&&S.projectMemory.length?`<span style="font-size:9px;margin-left:2px">${S.projectMemory.length}</span>`:''}
+          <i data-lucide="archive" style="width:14px;height:14px"></i>${S.projectMemory&&S.projectMemory.length?`<span style="font-size:9px;margin-left:2px">${S.projectMemory.length}</span>`:''}
         </button>
       </div>
 
@@ -180,8 +181,8 @@ function renderHazirla(){
         {value:'director',label:'Yönetmen Brief',sub:'Sahne senin, sistem çevirir'}
       ]}],S.promptFocus,'_setPromptFocus',{style:'flex:1;min-width:160px'})}
         ${S.promptFocus==='director'
-          ? `<div style="flex:1;min-width:160px;padding:10px 14px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.3);border-radius:var(--rad-md);font-size:11px;color:rgba(124,58,237,0.9);font-weight:600">
-              🎬 Strateji yok — brief birincil direktif
+          ? `<div style="flex:1;min-width:160px;padding:10px 14px;background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.3);border-radius:var(--rad-md);font-size:11px;color:rgba(124,58,237,0.9);font-weight:600;display:flex;align-items:center;gap:5px">
+              <i data-lucide="video" style="width:14px;height:14px"></i> Strateji yok — brief birincil direktif
             </div>`
           : (()=>{
               var stratGroups=[{label:'',items:[{value:'auto',label:'Karma (Hepsi)',sub:'Tüm stratejiler rotasyonu'}]}];
@@ -203,7 +204,7 @@ function renderHazirla(){
           <input type="number" min="1" max="10" class="inp" style="width:50px;padding:6px;border:none;background:transparent;font-weight:700;text-align:center" value="${S.genCount}" oninput="S.genCount=this.value">
         </div>
         <button class="bp" style="flex:1;min-width:130px" onclick="generatePrompts()" ${S.isGenerating?'disabled':''}>
-          ${S.isGenerating?'<span class="spinner"></span> '+h(S.genPhase||'...'):(S.mode==='video'?'Video Üret':'Fikir Üret')}
+          ${S.isGenerating?'<span class="spinner"></span> '+h(S.genPhase||'...'):'<i data-lucide="sparkles" style="margin-right:6px"></i>'+(S.mode==='video'?'Video Üret':'Fikir Üret')}
         </button>
       </div>
 
@@ -282,13 +283,13 @@ VIDEO_STRATEGIES.forEach(vs => {
         </div>`;
  
         // ── AKİŞ SEÇİCİ: Şablon mu, Strateji mi? ──
-        var t2vFlow = S.t2vFlow || 'strategy'; // 'strategy' | 'template'
+        var t2vFlow = S.t2vFlow || 'strategy';
         o+=`<div style="display:flex;gap:0;margin-bottom:16px;border:1.5px solid var(--brd);border-radius:10px;overflow:hidden">
-          <button onclick="S.t2vFlow='strategy';saveDB();render()" style="flex:1;padding:8px 0;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:background 0.15s;background:${t2vFlow==='strategy'?'var(--ac-orange)':'var(--bg-elevated)'};color:${t2vFlow==='strategy'?'#fff':'var(--tx-muted)'}">
-            🎬 Strateji ile Üret
+          <button onclick="S.t2vFlow='strategy';saveDB();render()" style="flex:1;padding:8px 0;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:background 0.15s;background:${t2vFlow==='strategy'?'var(--ac-orange)':'var(--bg-elevated)'};color:${t2vFlow==='strategy'?'#fff':'var(--tx-muted)'};display:flex;align-items:center;justify-content:center;gap:6px">
+            <i data-lucide="film" class="icon-xs"></i>Strateji ile Üret
           </button>
-          <button onclick="S.t2vFlow='template';saveDB();render()" style="flex:1;padding:8px 0;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:background 0.15s;background:${t2vFlow==='template'?'var(--ac-orange)':'var(--bg-elevated)'};color:${t2vFlow==='template'?'#fff':'var(--tx-muted)'}">
-            📋 Şablon ile Üret
+          <button onclick="S.t2vFlow='template';saveDB();render()" style="flex:1;padding:8px 0;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;transition:background 0.15s;background:${t2vFlow==='template'?'var(--ac-orange)':'var(--bg-elevated)'};color:${t2vFlow==='template'?'#fff':'var(--tx-muted)'};display:flex;align-items:center;justify-content:center;gap:6px">
+            <i data-lucide="layout-template" class="icon-xs"></i>Şablon ile Üret
           </button>
         </div>`;
  
@@ -312,8 +313,8 @@ VIDEO_STRATEGIES.forEach(vs => {
             var stratFields=getStrategyFields(S.activeVidStrat);
             if(!S.videoTemplateFields)S.videoTemplateFields={};
             o+=`<div style="margin-top:14px;background:var(--bg-card);border:1.5px solid rgba(212,100,42,0.2);border-radius:14px;padding:14px">
-              <div style="font-size:10px;font-weight:700;color:var(--tx-muted);letter-spacing:1px;margin-bottom:12px">
-                📝 ${selStrat?selStrat.name:''} — METİN ALANLARI
+              <div style="font-size:10px;font-weight:700;color:var(--tx-muted);letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:5px">
+                <i data-lucide="type" style="width:12px;height:12px"></i> ${selStrat?selStrat.name:''} — METİN ALANLARI
               </div>
               <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">`;
             stratFields.forEach(f=>{
@@ -404,19 +405,19 @@ VIDEO_STRATEGIES.forEach(vs => {
         <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap">
           ${['all','image','video'].map(f=>`
             <button onclick="S.poolFilter='${f}';render()"
-              style="padding:3px 10px;border-radius:99px;border:1.5px solid ${S.poolFilter===f?'var(--ac-orange)':'var(--brd)'};background:${S.poolFilter===f?'rgba(212,100,42,0.1)':'transparent'};color:${S.poolFilter===f?'var(--ac-orange)':'var(--tx-muted)'};font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">
-              ${f==='all'?'Tümü':f==='image'?'📷 Görsel':'🎬 Video'}
+              style="padding:3px 10px;border-radius:99px;border:1.5px solid ${S.poolFilter===f?'var(--ac-orange)':'var(--brd)'};background:${S.poolFilter===f?'rgba(212,100,42,0.1)':'transparent'};color:${S.poolFilter===f?'var(--ac-orange)':'var(--tx-muted)'};font-size:9px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px">
+              ${f==='all'?'Tümü':f==='image'?'Görsel':'Video'}
             </button>`).join('')}
           <button onclick="S.poolSort=S.poolSort==='newest'?'scored':'newest';render()"
-            style="padding:3px 10px;border-radius:99px;border:1.5px solid var(--brd);background:transparent;color:var(--tx-muted);font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">
-            ${S.poolSort==='newest'?'⬇ Yeni':'⭐ Puanlı'}
+            style="padding:3px 10px;border-radius:99px;border:1.5px solid var(--brd);background:transparent;color:var(--tx-muted);font-size:9px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:3px">
+            ${S.poolSort==='newest'?'Yeni':'Puanlı'}
           </button>
           ${S.promptPool.length?`<button onclick="if(confirm('Tüm listeyi temizle?')){S.promptPool=[];saveDB();render()}" style="padding:3px 8px;border-radius:99px;border:1.5px solid rgba(201,79,79,0.3);background:transparent;color:var(--red);font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">Temizle</button>`:''}
         </div>
       </div>
       ${torbadakiler.length?`<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(212,100,42,0.07);border:1.5px solid rgba(212,100,42,0.25);border-radius:10px;margin-top:10px">
         <span style="font-size:12px;font-weight:700;color:var(--ac-orange);flex:1">${torbadakiler.length} prompt seçili</span>
-        <button onclick="buildQ()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--ac-orange);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">▶ Kuyruğa Gönder</button>
+        <button onclick="buildQ()" style="padding:6px 14px;border-radius:8px;border:none;background:var(--ac-orange);color:#fff;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:4px"><i data-lucide="play" style="width:12px;height:12px"></i> Kuyruğa Gönder</button>
         <button onclick="S.promptPool.forEach(p=>{p.selected=false});saveDB();render()" style="padding:6px 10px;border-radius:8px;border:1.5px solid var(--brd);background:var(--bg-elevated);color:var(--tx-muted);font-size:11px;cursor:pointer;font-family:inherit">✕</button>
       </div>`:''}
     </div>`;
@@ -486,7 +487,7 @@ VIDEO_STRATEGIES.forEach(vs => {
           <!-- Referans thumbnail veya tür ikonu -->
           ${refThumb
             ? `<div style="width:32px;height:32px;border-radius:7px;overflow:hidden;flex-shrink:0;border:1px solid var(--brd)"><img src="${refThumb}" style="width:100%;height:100%;object-fit:cover"></div>`
-            : `<div style="width:26px;height:26px;border-radius:7px;background:${isVid?'rgba(192,100,42,0.12)':'rgba(42,100,192,0.1)'};display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px">${isVid?'🎬':'📷'}</div>`
+            : `<div style="width:26px;height:26px;border-radius:7px;background:${isVid?'rgba(192,100,42,0.12)':'rgba(42,100,192,0.1)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">${isVid?'<i data-lucide="film" style="width:14px;height:14px;color:rgba(192,100,42,0.8)"></i>':'<i data-lucide="image" style="width:14px;height:14px;color:rgba(42,100,192,0.8)"></i>'}</div>`
           }
 
           <!-- Bilgiler -->
@@ -529,7 +530,7 @@ VIDEO_STRATEGIES.forEach(vs => {
                 var isVideo=g.result&&(g.result.includes('.mp4')||g.result.includes('video'));
                 return `<div style="position:relative;width:52px;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--brd);cursor:pointer" onclick="S.tab='gallery';render()" title="${h(g.model||'')}">
                   ${isVideo
-                    ?`<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;font-size:18px">▶</div>`
+                    ?`<div style="width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center"><i data-lucide="play" style="width:20px;height:20px;color:#fff"></i></div>`
                     :`<img src="${g.result}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'">`
                   }
                 </div>`;

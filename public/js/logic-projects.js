@@ -69,7 +69,7 @@ function triggerMemorySearch(query) {
   clearTimeout(_memSearchTimer);
   if (!query || query.length < 8) {
     S.briefInterpretation = null;
-    render();
+    // render() kaldırıldı - focus kaybını önlemek için
     return;
   }
   _memSearchTimer = setTimeout(() => _runMemoryPipeline(query), 700);

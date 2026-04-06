@@ -3,171 +3,252 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#F5F1EB">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
 <title>Henosis Studio — Giriş</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2.47.10/dist/umd/supabase.js"></script>
 <style>
+  :root {
+    --bg-main: #F5F1EB;
+    --bg-cream: #FDF9F3;
+    --bg-card: #FFFFFF;
+    --bg-elev: #EDE8E0;
+    --brd: #D8D3CC;
+    --brd-soft: #E8E3DC;
+    --tx-main: #2C2419;
+    --tx-muted: #6B6255;
+    --tx-dim: #9A8F82;
+    --accent: #D4704A;
+    --accent-light: #E09070;
+    --ac-orange: #C95050;
+    --rad-md: 14px;
+    --rad-lg: 18px;
+    --shadow-soft: 0 2px 8px rgba(44,36,25,0.06);
+    --shadow-float: 0 8px 24px rgba(44,36,25,0.12);
+    --shadow-depth: 0 16px 48px rgba(44,36,25,0.15);
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  
   body {
     font-family: 'Inter', -apple-system, sans-serif;
-    background: #2C2D32;
-    color: #DCDCD6;
+    background: var(--bg-main);
+    color: var(--tx-main);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-image:
-      radial-gradient(ellipse at 15% 10%, rgba(131,100,107,0.12) 0%, transparent 50%),
-      radial-gradient(ellipse at 85% 90%, rgba(160,166,180,0.07) 0%, transparent 50%);
+    padding: 20px;
   }
+
   .card {
     width: 100%;
-    max-width: 400px;
+    max-width: 420px;
     padding: 40px 36px;
-    background: #363740;
-    border-radius: 20px;
-    border: 1px solid #50515C;
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    background: var(--bg-card);
+    border-radius: var(--rad-lg);
+    border: 1px solid var(--brd);
+    box-shadow: var(--shadow-depth);
   }
+
   .logo-row {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 32px;
   }
+  
   .logo-box {
-    width: 38px; height: 38px;
-    background: #83646B;
-    border-radius: 10px;
+    width: 48px; height: 48px;
+    background: var(--tx-main);
+    border-radius: var(--rad-md);
     display: flex; align-items: center; justify-content: center;
+    box-shadow: var(--shadow-float);
   }
+  
   .logo-box svg { display: block; }
-  .brand { font-size: 16px; font-weight: 700; color: #DCDCD6; }
-  .brand-sub { font-size: 10px; color: #A0A6B4; margin-top: 1px; letter-spacing: 0.5px; }
+  
+  .brand { 
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; 
+    font-weight: 700; 
+    color: var(--tx-main);
+    letter-spacing: -0.3px;
+  }
+  
+  .brand-sub { 
+    font-size: 12px; 
+    color: var(--tx-muted); 
+    margin-top: 3px; 
+    letter-spacing: 0.5px; 
+  }
 
   .tabs {
     display: flex;
-    gap: 0;
-    background: #424349;
-    border-radius: 10px;
-    padding: 3px;
+    gap: 4px;
+    background: var(--bg-elev);
+    border-radius: 12px;
+    padding: 4px;
     margin-bottom: 28px;
+    border: 1px solid var(--brd-soft);
   }
+  
   .tab-btn {
     flex: 1;
-    padding: 8px;
+    padding: 12px 16px;
     border: none;
-    border-radius: 8px;
-    font-size: 12px;
+    border-radius: 10px;
+    font-size: 13px;
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.18s;
+    transition: all 0.25s ease;
     background: transparent;
-    color: #A0A6B4;
+    color: var(--tx-muted);
   }
+  
+  .tab-btn:hover {
+    color: var(--tx-main);
+    background: rgba(255,255,255,0.6);
+  }
+  
   .tab-btn.active {
-    background: #363740;
-    color: #C8B4AB;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    background: var(--bg-card);
+    color: var(--tx-main);
+    box-shadow: var(--shadow-soft);
+    font-weight: 700;
   }
 
   label {
     display: block;
     font-size: 11px;
     font-weight: 600;
-    color: #A0A6B4;
-    margin-bottom: 6px;
-    letter-spacing: 0.4px;
+    color: var(--tx-muted);
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
   }
+  
   input {
     width: 100%;
-    padding: 11px 14px;
-    background: #424349;
-    border: 1.5px solid transparent;
-    border-radius: 10px;
-    color: #DCDCD6;
-    font-size: 14px;
+    padding: 14px 16px;
+    background: var(--bg-cream);
+    border: 1.5px solid var(--brd);
+    border-radius: var(--rad-md);
+    color: var(--tx-main);
+    font-size: 15px;
     font-family: inherit;
     outline: none;
-    transition: all 0.2s;
-    margin-bottom: 16px;
+    transition: all 0.25s ease;
+    margin-bottom: 18px;
   }
-  input:focus { border-color: #83646B; background: #4A4B54; }
-  input::placeholder { color: #686A78; }
+  
+  input:focus { 
+    border-color: var(--accent); 
+    background: var(--bg-card);
+    box-shadow: 0 0 0 3px rgba(212,112,74,0.1);
+  }
+  
+  input::placeholder { color: var(--tx-dim); }
 
   .btn-primary {
     width: 100%;
-    padding: 13px;
-    background: #83646B;
-    color: #fff;
+    padding: 16px;
+    background: var(--tx-main);
+    color: var(--bg-card);
     border: none;
-    border-radius: 10px;
-    font-size: 14px;
+    border-radius: var(--rad-md);
+    font-size: 15px;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
-    transition: all 0.2s;
-    margin-top: 4px;
+    transition: all 0.25s ease;
+    margin-top: 8px;
+    box-shadow: var(--shadow-float);
   }
-  .btn-primary:hover { background: #6D5059; transform: translateY(-1px); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  
+  .btn-primary:hover { 
+    background: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-depth);
+  }
+  
+  .btn-primary:disabled { 
+    opacity: 0.5; 
+    cursor: not-allowed; 
+    transform: none;
+  }
 
   .msg {
-    margin-top: 14px;
-    padding: 10px 14px;
-    border-radius: 9px;
-    font-size: 12px;
+    margin-top: 16px;
+    padding: 14px 16px;
+    border-radius: var(--rad-md);
+    font-size: 13px;
     line-height: 1.5;
     display: none;
+    font-weight: 500;
   }
-  .msg.error { background: rgba(201,80,80,0.1); border: 1px solid rgba(201,80,80,0.3); color: #C95050; display: block; }
-  .msg.success { background: rgba(74,175,122,0.1); border: 1px solid rgba(74,175,122,0.3); color: #4AAF7A; display: block; }
-
-  .divider {
-    text-align: center;
-    font-size: 10px;
-    color: #686A78;
-    margin: 20px 0;
-    position: relative;
+  
+  .msg.error { 
+    background: rgba(201,80,80,0.08); 
+    border: 1px solid rgba(201,80,80,0.2); 
+    color: var(--ac-orange); 
+    display: block; 
   }
-  .divider::before, .divider::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 42%;
-    height: 1px;
-    background: #50515C;
+  
+  .msg.success { 
+    background: rgba(74,175,122,0.08); 
+    border: 1px solid rgba(74,175,122,0.2); 
+    color: #4A8A5A; 
+    display: block; 
   }
-  .divider::before { left: 0; }
-  .divider::after { right: 0; }
 
   .footer-note {
-    margin-top: 24px;
-    font-size: 10px;
-    color: #686A78;
+    margin-top: 28px;
+    font-size: 12px;
+    color: var(--tx-dim);
     text-align: center;
     line-height: 1.6;
   }
+  
   .spinner {
     display: inline-block;
-    width: 14px; height: 14px;
+    width: 16px; height: 16px;
     border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
+    border-top-color: var(--bg-card);
     border-radius: 50%;
-    animation: spin 0.7s linear infinite;
+    animation: spin 0.8s linear infinite;
     vertical-align: middle;
-    margin-right: 6px;
+    margin-right: 10px;
   }
+  
   @keyframes spin { to { transform: rotate(360deg); } }
+
+  .forgot-link {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: var(--tx-muted);
+    margin-top: -12px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .forgot-link:hover {
+    color: var(--accent);
+  }
 </style>
 </head>
 <body>
 <div class="card">
   <div class="logo-row">
     <div class="logo-box">
-      <svg width="22" height="22" viewBox="0 0 48 48" fill="none">
-        <path d="M23,7 C15,5 7,10 6,19 C5,28 10,38 18,42 C25,45 34,42 38,35 C42,28 41,17 36,11 C32,6 29,8 23,7 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.8"/>
-        <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="1.4"/>
+      <svg width="26" height="26" viewBox="0 0 48 48" fill="none">
+        <path d="M23,7 C15,5 7,10 6,19 C5,28 10,38 18,42 C25,45 34,42 38,35 C42,28 41,17 36,11 C32,6 29,8 23,7 Z" fill="none" stroke="#F5F1EB" stroke-width="2"/>
+        <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="none" stroke="#F5F1EB" stroke-width="1.5"/>
       </svg>
     </div>
     <div>
@@ -177,121 +258,252 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Giriş Yap</button>
-    <button class="tab-btn" id="tab-register" onclick="switchTab('register')">Kayıt Ol</button>
+    <button class="tab-btn active" id="tab-login">Giriş Yap</button>
+    <button class="tab-btn" id="tab-register">Kayıt Ol</button>
   </div>
 
-  <!-- Giriş formu -->
   <div id="form-login">
-    <label>E-POSTA</label>
+    <label>E-Posta</label>
     <input type="email" id="login-email" placeholder="ornek@mail.com" autocomplete="email">
-    <label>ŞİFRE</label>
+    <label>Şifre</label>
     <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
-    <button class="btn-primary" id="btn-login" onclick="doLogin()">Giriş Yap</button>
+    <span class="forgot-link" id="forgot-link">Şifremi unuttum</span>
+    <button class="btn-primary" id="btn-login">Giriş Yap</button>
     <div class="msg" id="login-msg"></div>
   </div>
 
-  <!-- Kayıt formu -->
   <div id="form-register" style="display:none">
-    <label>E-POSTA</label>
+    <label>E-Posta</label>
     <input type="email" id="reg-email" placeholder="ornek@mail.com" autocomplete="email">
-    <label>ŞİFRE</label>
+    <label>Şifre</label>
     <input type="password" id="reg-password" placeholder="En az 8 karakter" autocomplete="new-password">
-    <label>ŞİFRE TEKRAR</label>
+    <label>Şifre Tekrar</label>
     <input type="password" id="reg-password2" placeholder="••••••••" autocomplete="new-password">
-    <button class="btn-primary" id="btn-register" onclick="doRegister()">Kayıt Ol</button>
+    <button class="btn-primary" id="btn-register">Kayıt Ol</button>
     <div class="msg" id="register-msg"></div>
   </div>
 
   <div class="footer-note">
-    Kendi Fal.ai ve Anthropic API anahtarlarınla çalışır.<br>
-    Henosis ücretli API çağrılarını senin adına yapmaz.
+    Kendi API anahtarlarınla çalışır.<br>
+    Verilerin Supabase hesabında güvenle saklanır.
   </div>
 </div>
 
 <script>
-  // ── Supabase başlat ──
-  const SUPABASE_URL  = 'https://ekvsjeqcjqrlubpzrjbf.supabase.co';  // ← anon key'i de değiştir
-  const SUPABASE_ANON = 'BURAYA_ANON_KEY_YAPISTIR';  // Settings → API → anon/public (eyJ... ile başlar)
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  // Supabase bağlantısı
+  const SUPABASE_URL  = 'https://ekvsjeqcjqrlubpzrjbf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrdnNqZXFjanFybHVicHpyamJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzQ5MDAsImV4cCI6MjA5MTAxMDkwMH0.Gvz3k9Jx2lUgFJgueibQcG_RU7H5gIBgp5Rau2lASoo';
+  
+  let supabase;
+  
+  try {
+    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+    console.log('✅ Supabase bağlantısı kuruldu');
+  } catch (e) {
+    console.error('❌ Supabase hatası:', e);
+    showMsg('login-msg', 'error', 'Bağlantı hatası. Sayfayı yenileyin.');
+  }
 
-  // Zaten giriş yapılmışsa direkt yönlendir
+  // DOM elementleri
+  const tabLogin = document.getElementById('tab-login');
+  const tabRegister = document.getElementById('tab-register');
+  const formLogin = document.getElementById('form-login');
+  const formRegister = document.getElementById('form-register');
+  const btnLogin = document.getElementById('btn-login');
+  const btnRegister = document.getElementById('btn-register');
+  const forgotLink = document.getElementById('forgot-link');
+
+  // Event listener'lar
+  tabLogin.addEventListener('click', () => switchTab('login'));
+  tabRegister.addEventListener('click', () => switchTab('register'));
+  btnLogin.addEventListener('click', doLogin);
+  btnRegister.addEventListener('click', doRegister);
+  forgotLink.addEventListener('click', resetPassword);
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const isLogin = formLogin.style.display !== 'none';
+    if (isLogin) doLogin(); else doRegister();
+  });
+
   (async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session) {
-      localStorage.setItem('hns_token', session.access_token);
-      localStorage.setItem('hns_refresh', session.refresh_token);
-      window.location.href = '/';
+    if (!supabase) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        localStorage.setItem('hns_token', session.access_token);
+        localStorage.setItem('hns_refresh', session.refresh_token);
+        localStorage.setItem('hns_user', JSON.stringify(session.user));
+        window.location.href = '/';
+      }
+    } catch (e) {
+      console.error('Session kontrolü hatası:', e);
     }
   })();
 
-  function switchTab(t) {
-    document.getElementById('tab-login').classList.toggle('active', t === 'login');
-    document.getElementById('tab-register').classList.toggle('active', t === 'register');
-    document.getElementById('form-login').style.display    = t === 'login'    ? '' : 'none';
-    document.getElementById('form-register').style.display = t === 'register' ? '' : 'none';
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    
+    tabLogin.classList.toggle('active', isLogin);
+    tabRegister.classList.toggle('active', !isLogin);
+    formLogin.style.display = isLogin ? 'block' : 'none';
+    formRegister.style.display = isLogin ? 'none' : 'block';
+    
+    clearMsg('login-msg');
+    clearMsg('register-msg');
   }
 
-  function setMsg(id, type, text) {
+  function showMsg(id, type, text) {
     const el = document.getElementById(id);
     el.className = 'msg ' + type;
     el.textContent = text;
   }
+
   function clearMsg(id) {
     const el = document.getElementById(id);
     el.className = 'msg';
     el.textContent = '';
   }
-  function setLoading(btnId, loading) {
+
+  function setLoading(btnId, isLoading, originalText) {
     const btn = document.getElementById(btnId);
-    btn.disabled = loading;
-    btn.innerHTML = loading
-      ? '<span class="spinner"></span>Lütfen bekleyin...'
-      : (btnId === 'btn-login' ? 'Giriş Yap' : 'Kayıt Ol');
-  }
-
-  async function doLogin() {
-    const email    = document.getElementById('login-email').value.trim();
-    const password = document.getElementById('login-password').value;
-    if (!email || !password) return setMsg('login-msg', 'error', 'E-posta ve şifre gerekli.');
-    clearMsg('login-msg');
-    setLoading('btn-login', true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading('btn-login', false);
-    if (error) return setMsg('login-msg', 'error', error.message);
-    localStorage.setItem('hns_token', data.session.access_token);
-    localStorage.setItem('hns_refresh', data.session.refresh_token);
-    window.location.href = '/';
-  }
-
-  async function doRegister() {
-    const email = document.getElementById('reg-email').value.trim();
-    const pass1  = document.getElementById('reg-password').value;
-    const pass2  = document.getElementById('reg-password2').value;
-    if (!email || !pass1) return setMsg('register-msg', 'error', 'Tüm alanlar zorunlu.');
-    if (pass1 !== pass2)  return setMsg('register-msg', 'error', 'Şifreler eşleşmiyor.');
-    if (pass1.length < 8) return setMsg('register-msg', 'error', 'Şifre en az 8 karakter olmalı.');
-    clearMsg('register-msg');
-    setLoading('btn-register', true);
-    const { data, error } = await supabase.auth.signUp({ email, password: pass1 });
-    setLoading('btn-register', false);
-    if (error) return setMsg('register-msg', 'error', error.message);
-    if (data.session) {
-      localStorage.setItem('hns_token', data.session.access_token);
-      localStorage.setItem('hns_refresh', data.session.refresh_token);
-      window.location.href = '/';
+    btn.disabled = isLoading;
+    if (isLoading) {
+      btn.innerHTML = '<span class="spinner"></span> Lütfen bekleyin...';
     } else {
-      setMsg('register-msg', 'success', 'Kayıt başarılı! E-postana gelen onay linkine tıkla, ardından giriş yap.');
-      switchTab('login');
+      btn.textContent = originalText;
     }
   }
 
-  // Enter tuşu desteği
-  document.addEventListener('keydown', e => {
-    if (e.key !== 'Enter') return;
-    const active = document.getElementById('form-login').style.display !== 'none';
-    if (active) doLogin(); else doRegister();
-  });
+  async function doLogin() {
+    if (!supabase) {
+      showMsg('login-msg', 'error', 'Bağlantı hatası. Sayfayı yenileyin.');
+      return;
+    }
+
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+
+    if (!email || !password) {
+      showMsg('login-msg', 'error', 'E-posta ve şifre gerekli.');
+      return;
+    }
+
+    clearMsg('login-msg');
+    setLoading('btn-login', true, 'Giriş Yap');
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        let msg = error.message;
+        if (error.message.includes('Invalid login')) msg = 'E-posta veya şifre hatalı.';
+        if (error.message.includes('Email not confirmed')) msg = 'E-posta henüz onaylanmamış. Spam klasörünü kontrol edin.';
+        showMsg('login-msg', 'error', msg);
+        setLoading('btn-login', false, 'Giriş Yap');
+        return;
+      }
+
+      localStorage.setItem('hns_token', data.session.access_token);
+      localStorage.setItem('hns_refresh', data.session.refresh_token);
+      localStorage.setItem('hns_user', JSON.stringify(data.user));
+      window.location.href = '/';
+    } catch (e) {
+      console.error('Login hatası:', e);
+      showMsg('login-msg', 'error', 'Bir hata oluştu. Tekrar deneyin.');
+      setLoading('btn-login', false, 'Giriş Yap');
+    }
+  }
+
+  async function doRegister() {
+    if (!supabase) {
+      showMsg('register-msg', 'error', 'Bağlantı hatası. Sayfayı yenileyin.');
+      return;
+    }
+
+    const email = document.getElementById('reg-email').value.trim();
+    const pass1 = document.getElementById('reg-password').value;
+    const pass2 = document.getElementById('reg-password2').value;
+
+    if (!email || !pass1) {
+      showMsg('register-msg', 'error', 'Tüm alanlar zorunlu.');
+      return;
+    }
+    
+    if (pass1 !== pass2) {
+      showMsg('register-msg', 'error', 'Şifreler eşleşmiyor.');
+      return;
+    }
+    
+    if (pass1.length < 8) {
+      showMsg('register-msg', 'error', 'Şifre en az 8 karakter olmalı.');
+      return;
+    }
+
+    clearMsg('register-msg');
+    setLoading('btn-register', true, 'Kayıt Ol');
+
+    try {
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password: pass1,
+        options: {
+          emailRedirectTo: window.location.origin + '/login.html'
+        }
+      });
+
+      if (error) {
+        showMsg('register-msg', 'error', error.message);
+        setLoading('btn-register', false, 'Kayıt Ol');
+        return;
+      }
+
+      if (data.session) {
+        localStorage.setItem('hns_token', data.session.access_token);
+        localStorage.setItem('hns_refresh', data.session.refresh_token);
+        localStorage.setItem('hns_user', JSON.stringify(data.user));
+        window.location.href = '/';
+      } else {
+        showMsg('register-msg', 'success', '✓ Kayıt başarılı! Lütfen e-postanızı kontrol edip onay linkine tıklayın. (Spam klasörünü de kontrol etmeyi unutmayın)');
+        setLoading('btn-register', false, 'Kayıt Ol');
+      }
+    } catch (e) {
+      console.error('Kayıt hatası:', e);
+      showMsg('register-msg', 'error', 'Bir hata oluştu. Tekrar deneyin.');
+      setLoading('btn-register', false, 'Kayıt Ol');
+    }
+  }
+
+  async function resetPassword() {
+    if (!supabase) {
+      showMsg('login-msg', 'error', 'Bağlantı hatası. Sayfayı yenileyin.');
+      return;
+    }
+
+    const email = document.getElementById('login-email').value.trim();
+    if (!email) {
+      showMsg('login-msg', 'error', 'Lütfen e-posta adresinizi girin.');
+      return;
+    }
+
+    setLoading('btn-login', true, 'Giriş Yap');
+    
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/login.html'
+      });
+      
+      if (error) {
+        showMsg('login-msg', 'error', error.message);
+      } else {
+        showMsg('login-msg', 'success', 'Şifre sıfırlama linki gönderildi! E-postanızı kontrol edin.');
+      }
+    } catch (e) {
+      showMsg('login-msg', 'error', 'Bir hata oluştu. Tekrar deneyin.');
+    }
+    
+    setLoading('btn-login', false, 'Giriş Yap');
+  }
 </script>
 </body>
 </html>

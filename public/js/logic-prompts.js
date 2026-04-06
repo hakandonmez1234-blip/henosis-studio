@@ -275,14 +275,22 @@ async function generatePrompts(){
     }
 
     let sceneLaw='';
+    // Kullanıcının ham brief'ini koru - her zaman ekle
+    let rawBriefContext = S.conceptBrief && S.conceptBrief.trim().length > 0
+      ? '\n\n━━━ USER CREATIVE BRIEF — PRESERVE THIS INTENT ━━━\n"' + S.conceptBrief.trim() + '"\n\nThis is the user\'s original creative direction. Honor their emotional intent and specific requests (like "magazine cover", "bold", "editorial", etc). Do NOT replace their creative vision with generic descriptions.'
+      : '';
+    
     if(sceneInterp&&sceneInterp.sceneDirective){
-      sceneLaw='\n\n━━━ SCENE LAW — NON-NEGOTIABLE ━━━\n'+
+      sceneLaw=rawBriefContext + '\n\n━━━ SCENE LAW — PHYSICAL REALITY ━━━\n'+
         sceneInterp.sceneDirective+
         (sceneInterp.location?'\nLocation: '+sceneInterp.location:'')+
         (sceneInterp.subject?'\nSubject: '+sceneInterp.subject:'')+
         (sceneInterp.activity?'\nActivity: '+sceneInterp.activity:'')+
         (sceneInterp.lightingImplication?'\nNatural light in scene: '+sceneInterp.lightingImplication:'')+
-        '\n\nDo NOT replace this scene with a studio setup, change the location, or simplify the subjects. The strategy provides the photographic approach — the scene law provides the physical reality you must execute.';
+        '\n\nThe USER CREATIVE BRIEF defines the emotional/creative intent. The SCENE LAW defines physical reality. Both must be respected.';
+    } else {
+      // Scene interpreter çalışmadıysa sadece user brief'i kullan
+      sceneLaw = rawBriefContext;
     }
 
     S.genPhase='Promptlar yazılıyor...';render();
@@ -309,20 +317,19 @@ async function generatePrompts(){
         briefContext;
 
       let varHint=(count>1&&S.activeStrat!=='auto')
-        ?`\n\nVariation ${(i+1)} of ${count}: Choose a meaningfully different INTENT and composition decision. Same product, completely different emotional starting point.`:'';
+        ?`\n\nVariation ${(i+1)} of ${count}: Choose a meaningfully different INTENT and composition decision. Same product, completely different emotional starting point.`
+        :'';
 
       let isBlankStrat=strat.name==='Boş (Sadece Benim Metnim)';
       let stratInstruction='';
       if(!isBlankStrat){
-        stratInstruction=`\n\n━━━ PROMPT ORDER ━━━\nUse the ACTIVE STRATEGY as inspiration for the composition decision. Then write in this order:\n1. INTENT — what feeling does this strategy create in the viewer? One sentence.\n2. COMPOSITION DECISION — the one physical/spatial choice from this strategy that produces that feeling.\n3. PRODUCT INTEGRATION — how {isim} inhabits that composition.\n4. TECHNICAL — minimum words, only what serves the physical feel.\nProduct concept: "${S.conceptBrief||'see reference image'}"`;
+        stratInstruction=`\n\n━━━ PROMPT ORDER ━━━\nStart with the USER CREATIVE BRIEF\'s emotional intent. Use the ACTIVE STRATEGY only as inspiration for execution style. Write in this order:\n1. INTENT — what feeling does the USER CREATIVE BRIEF describe? One sentence capturing their vision.\n2. COMPOSITION DECISION — the one physical/spatial choice that creates that feeling (inspired by strategy).\n3. PRODUCT INTEGRATION — how {isim} inhabits that composition.\n4. TECHNICAL — minimum words, only what serves the physical feel.\n\nIMPORTANT: The user said: "${S.conceptBrief||'see reference image'}" — this creative intent is PRIMARY. The strategy is secondary execution guidance.`;
       }else{
-        stratInstruction=S.conceptBrief?`\n\nUser concept: "${S.conceptBrief}"`:'';
+        stratInstruction=S.conceptBrief?`\n\n━━━ USER DIRECTIVE — PRIMARY SOURCE ━━━\nThe user provided this creative direction: "${S.conceptBrief}"\n\nYOUR TASK: Translate this into a vivid, cinematic English photography prompt. \n- Preserve ALL specific creative requests (like "magazine cover", "editorial", "dramatic", "bold", etc.)\n- Expand on their vision with cinematic detail\n- Do NOT replace their creative intent with generic product photography\n- Make it feel like their exact request, professionally executed`:'';
       }
 
       let txt=stratInstruction+focusRule+
         '\n\nWrite ONE English photography prompt, 150–220 words. Use {isim} for product name. Output ONLY the prompt paragraph — no titles, no explanations, no quotes.'+varHint;
-
-      let scenMatched=sceneInterp&&sceneInterp.suggestedStrategy&&S.activeStrat==='auto';
       let p=callLLM(txt,imgUrls,sysOver).then(res=>{
         S.promptPool.unshift({
           id:genPromptId(),

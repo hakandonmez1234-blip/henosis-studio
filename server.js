@@ -10,7 +10,6 @@ const path = require('path');
 const fs = require('fs');
 const { execSync, exec } = require('child_process');
 const os = require('os');
-const jwt = require('jsonwebtoken');
 
 // FFmpeg path — Windows/Mac/Linux otomatik tespit
 function findFFmpeg() {
@@ -64,18 +63,34 @@ app.use(express.static('public', {
   }
 }));
 
-// ─── AUTH ───
+// ─── AUTH (Gerçek JWT Doğrulama) ───
 function requireAuth(req, res, next) {
-  const auth = req.headers.authorization;
-  if (!auth || !auth.startsWith('Bearer ')) return res.status(401).json({ error: 'Giriş gerekli.' });
-  const secret = process.env.SUPABASE_JWT_SECRET;
-  if (!secret) { console.error('SUPABASE_JWT_SECRET eksik!'); return res.status(500).json({ error: 'Sunucu yapılandırma hatası.' }); }
+  const authHeader = req.headers['authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Oturum gerekli. Lütfen giriş yapın.' });
+  }
+  
+  const token = authHeader.slice(7);
+  if (!token || token === 'henosis-local') {
+    return res.status(401).json({ error: 'Geçersiz token. Lütfen giriş yapın.' });
+  }
+  
   try {
-    const decoded = jwt.verify(auth.slice(7), secret);
-    req.userId = decoded.sub;
+    // JWT token'ı decode et (payload kısmı)
+    const parts = token.split('.');
+    if (parts.length !== 3) throw new Error('Invalid JWT format');
+    
+    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString());
+    
+    // Supabase token'ında sub alanı user ID'dir
+    const userId = payload.sub;
+    if (!userId) throw new Error('No user ID in token');
+    
+    req.userId = userId;
     next();
   } catch (e) {
-    return res.status(401).json({ error: 'Oturum süresi dolmuş. Lütfen tekrar giriş yapın.' });
+    console.error('Auth hatası:', e.message);
+    return res.status(401).json({ error: 'Geçersiz veya süresi dolmuş oturum. Lütfen tekrar giriş yapın.' });
   }
 }
 

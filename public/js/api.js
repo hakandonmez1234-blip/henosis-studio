@@ -4,6 +4,14 @@
 
 async function callClaude(messages,modelName,sysOverride){
   if(!S.claudeKey&&!S.envClaudeKey)throw new Error("Claude API Key eksik!");
+  
+  // System prompt caching kontrolü
+  var cacheInfo=getCachedSystemPrompt(sysOverride);
+  var systemToUse=cacheInfo.system;
+  
+  // Claude 3.7+ için cache breakpoint (extended thinking modelleri)
+  var isCacheableModel=modelName&&(modelName.includes('3-7')||modelName.includes('claude-3-7'));
+  
   var formatted=[];
   for(let msg of messages){
     if(Array.isArray(msg.content)){
@@ -17,9 +25,32 @@ async function callClaude(messages,modelName,sysOverride){
       formatted.push({role:msg.role,content:nc});
     }else formatted.push(msg);
   }
+  
   try{
-    var r=await fetch('/api/claude',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({apiKey:S.claudeKey,model:modelName||"claude-sonnet-4-6",max_tokens:1500,system:sysOverride||SYS_PROMPT,messages:formatted})});
-    var d=await r.json();if(!r.ok)throw new Error(d.error||"Sunucu hatası");return d.text.trim();
+    // Dinamik max_tokens - görev zorluğuna göre
+    var estimatedTokens=1500;
+    var lastMsg=formatted[formatted.length-1];
+    if(lastMsg&&lastMsg.content){
+      var textLen=typeof lastMsg.content==='string'?lastMsg.content.length:lastMsg.content.map(c=>c.text||'').join('').length;
+      if(textLen>500)estimatedTokens=2500;
+      if(textLen>1000)estimatedTokens=4000;
+    }
+    
+    var r=await fetch('/api/claude',{
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body:JSON.stringify({
+        apiKey:S.claudeKey,
+        model:modelName||"claude-sonnet-4-6",
+        max_tokens:estimatedTokens,
+        system:systemToUse,
+        messages:formatted,
+        // Claude 3.7+ için cache hint (backend desteklerse)
+        ...(isCacheableModel&&cacheInfo.cached?{cache_control:{type:"ephemeral"}}:{})
+      })
+    });
+    var d=await r.json();if(!r.ok)throw new Error(d.error||"Sunucu hatası");
+    return d.text.trim();
   }catch(e){throw new Error("API Hatası: "+e.message);}
 }
 
@@ -62,6 +93,23 @@ async function generate(item,maxRetries=3){
         throw new Error('Video üretilemedi: '+JSON.stringify(dvid).slice(0,200));
       }
       if(m.t==='bgrem'||m.t==='upscale'){const pl={image_url:item.ref.url};if(m.t==='upscale')pl.prompt=item.prompt;const d=await falFetch(pl);const url=d.image?.url||d.images?.[0]?.url||d.url;if(url)return url;throw new Error('İşlem başarısız.');}
+      
+      // Inpainting desteği
+      if(item.useInpainting&&item.maskUrl){
+        const payload={
+          image_url:item.ref.url,
+          prompt:item.prompt,
+          mask_url:item.maskUrl
+        };
+        const d=await falFetch(payload);
+        const imgResult=d.images?.[0];
+        const imgUrl=typeof imgResult==='string'?imgResult:(imgResult?.url||imgResult?.image_url||null);
+        if(imgUrl)return imgUrl;
+        if(d.image?.url)return d.image.url;
+        if(d.url)return d.url;
+        throw new Error('Inpainting başarısız: '+JSON.stringify(d).slice(0,200));
+      }
+      
       const isT2I=item.ref&&item.ref._textToImage;
       const hasM=S.masterRefs&&S.masterRefs.length>0;
       const payload={prompt:item.prompt};

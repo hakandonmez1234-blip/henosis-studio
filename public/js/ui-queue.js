@@ -35,20 +35,20 @@ function renderQueue(){
   // ── Üst toolbar ──
   o += `<div class="fb mb16" style="flex-wrap:wrap;gap:10px">
     <div class="fc g8">
-      <span class="badge">⏳ ${pendQ}</span>
-      <span class="badge" style="background:rgba(74,175,122,0.12);color:var(--green)">✓ ${doneQ}</span>
-      <span class="badge" style="background:rgba(201,79,79,0.1);color:var(--red)">✗ ${errorQ}</span>
-      ${runQ > 0 ? `<span class="badge" style="background:rgba(90,143,168,0.15);color:var(--ac-blue);animation:pulse 1.2s infinite">⚡ ${runQ} işleniyor</span>` : ''}
+      <span class="badge"><i data-lucide="clock" class="icon-xs" style="margin-right:4px"></i>${pendQ}</span>
+      <span class="badge" style="background:rgba(74,175,122,0.12);color:var(--green)"><i data-lucide="check-circle" class="icon-xs" style="margin-right:4px"></i>${doneQ}</span>
+      <span class="badge" style="background:rgba(201,79,79,0.1);color:var(--red)"><i data-lucide="x-circle" class="icon-xs" style="margin-right:4px"></i>${errorQ}</span>
+      ${runQ > 0 ? `<span class="badge" style="background:rgba(90,143,168,0.15);color:var(--accent);animation:pulse 1.2s infinite"><i data-lucide="zap" class="icon-xs" style="margin-right:4px"></i>${runQ} işleniyor</span>` : ''}
     </div>
     <div class="fc g8">
       ${S.run ? `
-        <button class="bs" style="padding:8px 14px;color:var(--red);border-color:rgba(201,80,80,0.35)"
-          onclick="stopQueue()">⛔ Durdur</button>
+        <button class="bs" style="padding:8px 14px;color:var(--tx-main);border-color:rgba(201,80,80,0.35)"
+          onclick="stopQueue()"><i data-lucide="square" class="icon-xs" style="margin-right:4px"></i>Durdur</button>
       ` : ''}
       <button class="bs" style="padding:8px 14px"
-        onclick="S.queue=S.queue.filter(q=>q.status!=='done');saveDB(true);render()">Bitenleri Gizle</button>
-      <button class="bg" style="color:var(--red)"
-        onclick="if(confirm('Kuyruğu tamamen boşalt?')){stopQueue();S.queue=[];S.run=false;S.currentBatchId=null;saveDB(true);render()}">Boşalt</button>
+        onclick="S.queue=S.queue.filter(q=>q.status!=='done');saveDB(true);render()"><i data-lucide="eye-off" class="icon-xs" style="margin-right:4px"></i>Bitenleri Gizle</button>
+      <button class="bg" style="color:var(--tx-main)"
+        onclick="if(confirm('Kuyruğu tamamen boşalt?')){stopQueue();S.queue=[];S.run=false;S.currentBatchId=null;saveDB(true);render()}"><i data-lucide="trash-2" class="icon-xs" style="margin-right:4px"></i>Boşalt</button>
     </div>
   </div>`;
 
@@ -90,11 +90,11 @@ function renderQueue(){
       var errId = `err-${i}`;
       var errBlock = isError && it.result ? `
         <div style="margin-top:6px">
-          <div id="${errId}-short" style="font-size:10px;color:var(--red);cursor:pointer"
+          <div id="${errId}-short" style="font-size:10px;color:var(--tx-main);cursor:pointer;display:flex;align-items:center;gap:4px"
             onclick="document.getElementById('${errId}-full').style.display='block';this.style.display='none'">
-            ⚠ ${h(it.result.substring(0,60))}${it.result.length>60?'… (detay)':''}
+            <i data-lucide="alert-circle" class="icon-xs"></i>${h(it.result.substring(0,60))}${it.result.length>60?'… (detay)':''}
           </div>
-          <div id="${errId}-full" style="display:none;font-size:10px;color:var(--red);word-break:break-word;line-height:1.5">${h(it.result)}</div>
+          <div id="${errId}-full" style="display:none;font-size:10px;color:var(--tx-main);word-break:break-word;line-height:1.5">${h(it.result)}</div>
         </div>` : '';
 
       // Süre tahmini
@@ -158,7 +158,7 @@ function renderQueue(){
         <span class="spinner"></span> İşleniyor…
       </button>
       <button class="bs" style="padding:14px 20px;color:var(--red);border-color:rgba(201,80,80,0.35)"
-        onclick="stopQueue()">⛔ Durdur</button>
+        onclick="stopQueue()">Durdur</button>
     </div>`;
   }
 

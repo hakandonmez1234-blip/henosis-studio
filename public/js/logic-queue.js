@@ -85,7 +85,7 @@ async function runAll(){
       var duration=it._startedAt?Math.round((Date.now()-it._startedAt)/1000):0;
       if(S.masterFace&&mType!=='video'&&mType!=='bgrem'&&mType!=='upscale'){it.result=await faceSwap(it.result,S.masterFace.url);cost+=0.015;}
       it.status='done';delete it._startedAt;
-      S.gallery.unshift({id:it.id,ref:it.ref,prompt:it.prompt,status:'done',result:it.result,batch:it.batch,model:it.model,strat:it.stratName,flagged:false,note:'',duration:duration,promptId:it.promptId||'',scores:{tutarlilik:0,dogallik:0,yeterlilik:0}});
+      S.gallery.unshift({id:it.id,ref:it.ref,prompt:it.prompt,status:'done',result:it.result,batch:it.batch,model:it.model,strat:it.stratName,flagged:false,note:'',duration:duration,promptId:it.promptId||'',scores:{tutarlilik:0,dogallik:0,yeterlilik:0},isRevision:it.isRevision||false,originalIdx:it.originalIdx||null,maskUrl:it.maskUrl||null});
       _updateModelStats(it.model,duration);
       if(M[it.model])cost+=M[it.model].pn;saveDB(true);
     }catch(e){it.status='error';it.result=e.message;delete it._startedAt;saveDB(true);}

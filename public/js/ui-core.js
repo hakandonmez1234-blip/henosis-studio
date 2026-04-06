@@ -135,36 +135,46 @@ function render(){
 
   // ── HEADER ──
   o+=`<div class="hdr">
-    <div class="fc g12">
-      <div class="logo"><svg width="24" height="24" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block">
-        <path d="M23,7 C15,5 7,10 6,19 C5,28 10,38 18,42 C25,45 34,42 38,35 C42,28 41,17 36,11 C32,6 29,8 23,7 Z" fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="1.5"/>
-        <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="none" stroke="rgba(255,255,255,0.88)" stroke-width="1.2"/>
-        <clipPath id="hlo"><path d="M23,7 C15,5 7,10 6,19 C5,28 10,38 18,42 C25,45 34,42 38,35 C42,28 41,17 36,11 C32,6 29,8 23,7 Z"/></clipPath>
+    <div class="logo-wrap">
+      <div class="logo"><svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;width:100%;height:100%">
+        <path d="M23,7 C15,5 7,10 6,19 C5,28 10,38 18,42 C25,45 34,42 38,35 C42,28 41,17 36,11 C32,6 29,8 23,7 Z" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="none" stroke="currentColor" stroke-width="1.2"/>
         <g clip-path="url(#hlo)">
-          <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="rgba(0,0,0,0.22)" stroke="rgba(255,255,255,0.25)" stroke-width="1.0"/>
+          <path d="M34,11 C28,8 21,12 19,20 C17,28 20,38 28,42 C35,45 43,40 45,32 C47,24 44,14 39,10 C36,8 37,13 34,11 Z" fill="currentColor" fill-opacity="0.08" stroke="currentColor" stroke-width="1.0"/>
         </g>
       </svg></div>
-      <div class="hdr-title">Henosis Studio</div>
+    </div>
+    <div class="hdr-center">
+      <div class="hdr-title"><i data-lucide="sparkles" class="icon-sm" style="margin-right:8px"></i>Henosis Studio</div>
       <div class="hdr-ver">demo0.1</div>
     </div>
-    <div class="fc g8">
+    <div class="hdr-right">
       <button class="hermes-btn" onclick="openHermes()">
-        HERMES
+        <i data-lucide="wand-2" style="margin-right:6px"></i>HERMES
       </button>
-      <div class="hdr-db ${dbSyncing?'syncing':''}">${dbIcon} ${S.dbStatus}</div>
-      <div class="hdr-cost">$${S.totalSpent.toFixed(2)}</div>
-      ${window._hnsUserEmail?`<div style="display:flex;align-items:center;gap:6px;padding:3px 10px;background:var(--bg-cream);border-radius:99px;border:1px solid var(--brd)">
-        <span style="font-size:10px;color:var(--tx-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${window._hnsUserEmail}</span>
-        <button onclick="typeof doLogout==='function'&&doLogout()" style="background:none;border:none;cursor:pointer;color:var(--tx-muted);font-size:10px;padding:0;font-family:inherit;font-weight:600" title="Çıkış yap">↪</button>
+      <div class="hdr-db ${dbSyncing?'syncing':''}"><i data-lucide="database" style="margin-right:4px"></i>${S.dbStatus}</div>
+      <div class="hdr-cost"><i data-lucide="coins" style="margin-right:4px"></i>$${S.totalSpent.toFixed(2)}</div>
+      ${window._hnsUserEmail?`<div style="display:flex;align-items:center;gap:8px;padding:4px 12px;background:var(--bg-elev);border-radius:var(--rad-pill);border:1px solid var(--brd)">
+        <i data-lucide="user" class="icon-xs"></i>
+        <span style="font-size:11px;color:var(--tx-muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${window._hnsUserEmail}</span>
+        <button onclick="typeof doLogout==='function'&&doLogout()" style="background:none;border:none;cursor:pointer;color:var(--tx-muted);padding:0;font-family:inherit;display:flex;align-items:center" title="Çıkış yap"><i data-lucide="log-out" class="icon-xs"></i></button>
       </div>`:''}
     </div>
   </div>`;
 
   // ── TABS ──
   var qc=S.queue.filter(q=>q.status==='pending').length;
+  var tabs=[
+    {id:'hazirla',l:'Yaratım',icon:'compass'},
+    {id:'uretim',l:'Stüdyo',icon:'layout-grid'},
+    {id:'queue',l:'Kuyruk',icon:'clock',badge:qc||''},
+    {id:'gallery',l:'Galeri',icon:'image',badge:S.gallery.length||''},
+    {id:'learn',l:'Hafıza',icon:'brain-circuit'},
+    {id:'settings',l:'Ayarlar',icon:'settings-2'}
+  ];
   o+='<div class="tabs">';
-  [{id:'hazirla',l:'Yaratım'},{id:'uretim',l:'Stüdyo'},{id:'queue',l:'Kuyruk',badge:qc||''},{id:'gallery',l:'Galeri',badge:S.gallery.length||''},{id:'learn',l:'Hafıza'},{id:'settings',l:'Ayarlar'}].forEach(t=>{
-    o+=`<button class="tb ${S.tab===t.id?'on':''}" onclick="S.tab='${t.id}';render()">${t.l}${t.badge?`<span class="tb-badge">${t.badge}</span>`:''}</button>`;
+  tabs.forEach((t,i)=>{
+    o+=`<button class="tb ${S.tab===t.id?'on':''}" onclick="S.tab='${t.id}';render()" style="animation:slide-in-right 0.4s var(--ease-spring) ${i*0.05}s backwards"><i data-lucide="${t.icon}" class="icon-sm" style="margin-right:6px"></i>${t.l}${t.badge?`<span class="tb-badge">${t.badge}</span>`:''}</button>`;
   });
   o+='</div><div class="cnt">';
 
@@ -187,23 +197,44 @@ function render(){
 
   app.innerHTML=o;
 
+  // Lucide ikonlarını oluştur
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
+
   // Custom dropdown CSS — bir kez inject et
   if(!document.getElementById('cd-styles')){
     var s=document.createElement('style');s.id='cd-styles';
     s.textContent=`
       .cd-wrap{position:relative;width:100%}
-      .cd-trigger{display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--bg-card);border:1px solid var(--br);border-radius:var(--rad-md);cursor:pointer;transition:border-color 0.15s}
-      .cd-trigger:hover{border-color:var(--ac-orange)}
-      .cd-menu{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--bg-elevated);border:1px solid var(--br);border-radius:14px;z-index:999;max-height:280px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.4);padding:6px}
-      .cd-group-label{font-size:9px;font-weight:700;color:var(--tx-muted);letter-spacing:1.2px;padding:8px 10px 4px;text-transform:uppercase}
-      .cd-item{padding:8px 10px;border-radius:9px;cursor:pointer;transition:background 0.12s}
-      .cd-item:hover{background:var(--bg-card)}
+      /* ═══ IMAGE GRID — Krem Fiziksel ═══ */
+      .ig { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; margin-top: 20px; }
+      .ic { 
+        position: relative; 
+        border-radius: var(--rad-sm); 
+        overflow: hidden; 
+        border: 1px solid var(--brd); 
+        aspect-ratio: 1; 
+        transition: all 0.4s var(--ease-spring);
+        animation: spring-in 0.5s var(--ease-spring) backwards;
+      }
+      .ic:hover { 
+        transform: translateY(-6px) scale(1.02);
+        box-shadow: var(--shadow-float); 
+        border-color: var(--brd-strong);
+        z-index: 2;
+      }
+      .ic img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s var(--ease-smooth); }
+      .ic:hover img { transform: scale(1.08); }
+      .ic-l { position: absolute; bottom: 0; left: 0; right: 0; padding: 8px; background: linear-gradient(transparent, rgba(44,36,25,0.8)); font-size: 10px; color: var(--bg-elev); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .ic-x { position: absolute; top: 6px; right: 6px; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-elev); color: var(--tx-main); border: 1px solid var(--brd); cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; z-index: 3; transition: all 0.2s var(--ease-spring); opacity: 0; transform: scale(0.8); }
+      .ic:hover .ic-x { opacity: 1; transform: scale(1); }
+      .ic-x:hover { background: var(--tx-main); color: var(--bg-elev); border-color: var(--tx-main); transform: scale(1.1); }
       .cd-selected{background:rgba(212,100,42,0.08)}
       .cd-menu::-webkit-scrollbar{width:4px}
       .cd-menu::-webkit-scrollbar-track{background:transparent}
       .cd-menu::-webkit-scrollbar-thumb{background:var(--br);border-radius:4px}
     `;
-    document.head.appendChild(s);
   }
   setTimeout(bindDragDrops,0);
 
@@ -248,7 +279,7 @@ function renderProjectSaveModal() {
     onclick="S.prjSaveModal=false;S.prjSaveGalIdx=null;render()">
     <div style="background:var(--bg-card);border:1px solid var(--brd);border-radius:var(--rad-lg);padding:28px;width:400px;max-width:92vw;box-shadow:var(--shadow-soft)"
       onclick="event.stopPropagation()">
-      <div style="font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:4px">📁 Projeye Kaydet</div>
+      <div style="font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:8px"><i data-lucide="folder-plus" style="width:18px;height:18px"></i> Projeye Kaydet</div>
       <div style="font-size:11px;color:var(--tx-muted);margin-bottom:20px">Bu üretimi hafızana kaydet. Aylar sonra "o sirke firması" yazınca bulabilirsin.</div>
 
       <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px">
@@ -278,8 +309,8 @@ function renderProjectSaveModal() {
 
       <div class="fc g8">
         <button class="bs" style="flex:1;font-size:13px;padding:11px" onclick="S.prjSaveModal=false;S.prjSaveGalIdx=null;render()">İptal</button>
-        <button class="bp" style="flex:2;font-size:13px;padding:11px" onclick="saveProject(document.getElementById('prj-title-inp').value,document.getElementById('prj-client-inp').value,document.getElementById('prj-note-inp').value,S.prjSaveGalIdx)">
-          📁 Kaydet
+        <button class="bp" style="flex:2;font-size:13px;padding:11px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="saveProject(document.getElementById('prj-title-inp').value,document.getElementById('prj-client-inp').value,document.getElementById('prj-note-inp').value,S.prjSaveGalIdx)">
+          <i data-lucide="folder-plus" style="width:14px;height:14px"></i> Kaydet
         </button>
       </div>
     </div>
@@ -308,7 +339,7 @@ function renderMemoryModal() {
       onclick="event.stopPropagation()">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-shrink:0">
         <div>
-          <div style="font-family:'Playfair Display',serif;font-size:17px;font-weight:700">📁 Yaratıcı Hafıza</div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:600;display:flex;align-items:center;gap:8px"><i data-lucide="archive" style="width:18px;height:18px"></i> Yaratıcı Hafıza</div>
           <div style="font-size:10px;color:var(--tx-muted);margin-top:2px">${projects.length} proje kaydedildi</div>
         </div>
         <button onclick="S.memModal=false;S.memSearchQ='';render()" style="background:none;border:none;cursor:pointer;color:var(--tx-muted);font-size:18px;padding:4px">✕</button>
@@ -321,8 +352,8 @@ function renderMemoryModal() {
 
       <div style="overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px">
         ${filtered.length === 0 ? `<div style="text-align:center;padding:40px 20px;color:var(--tx-muted)">
-          <div style="font-size:32px;margin-bottom:10px">📁</div>
-          <div style="font-size:13px">${projects.length === 0 ? 'Henüz proje kaydedilmedi.<br><span style="font-size:11px">Galeri\'deki bir görselde 📁 butonuna bas.</span>' : 'Eşleşen proje bulunamadı'}</div>
+          <div style="font-size:32px;margin-bottom:10px;display:flex;align-items:center;justify-content:center"><i data-lucide="archive" style="width:32px;height:32px;opacity:0.4"></i></div>
+          <div style="font-size:13px">${projects.length === 0 ? 'Henüz proje kaydedilmedi.<br><span style="font-size:11px">Galeri\'deki bir görselde <i data-lucide="folder-plus" style="width:16px;height:16px"></i> butonuna bas.</span>' : 'Eşleşen proje bulunamadı'}</div>
         </div>` : filtered.map(prj => {
           var dateStr = prj.savedAt ? new Date(prj.savedAt).toLocaleDateString('tr-TR',{day:'2-digit',month:'short',year:'2-digit'}) : '';
           var isActive = S.activeProjectRef && S.activeProjectRef.id === prj.id;
@@ -330,7 +361,7 @@ function renderMemoryModal() {
             onmouseenter="this.style.borderColor='var(--ac-orange)'"
             onmouseleave="this.style.borderColor='${isActive?'rgba(212,100,42,0.5)':'var(--brd)'}'">
             <div style="display:flex;gap:10px;align-items:flex-start">
-              ${prj.imageUrl && !prj.imageUrl.includes('.mp4') ? `<img src="${prj.imageUrl}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0">` : `<div style="width:44px;height:44px;background:var(--bg-deep);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px">📁</div>`}
+              ${prj.imageUrl && !prj.imageUrl.includes('.mp4') ? `<img src="${prj.imageUrl}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;flex-shrink:0">` : `<div style="width:44px;height:44px;background:var(--bg-deep);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center"><i data-lucide="folder" style="width:20px;height:20px;opacity:0.5"></i></div>`}
               <div style="flex:1;min-width:0">
                 <div style="display:flex;align-items:center;gap:6px;margin-bottom:2px">
                   <div style="font-size:13px;font-weight:700;color:var(--tx-main);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${h(prj.title)}</div>
@@ -349,7 +380,7 @@ function renderMemoryModal() {
               <button onclick="applyProjectRef('${prj.id}');S.memModal=false;S.memSearchQ='';S.tab='hazirla';render()" style="flex:1;padding:7px;background:var(--ac-orange);color:#fff;border:none;border-radius:8px;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit">
                 ✓ Bu Projeyi Referans Al
               </button>
-              <button onclick="if(confirm('Projeyi sil?')){S.projectMemory.splice(S.projectMemory.indexOf(S.projectMemory.find(p=>p.id==='${prj.id}')),1);saveDB();render()}" style="padding:7px 10px;background:var(--bg-card);border:1px solid var(--brd);border-radius:8px;cursor:pointer;font-size:11px;color:var(--red);font-family:inherit">🗑</button>
+              <button onclick="if(confirm('Projeyi sil?')){S.projectMemory.splice(S.projectMemory.indexOf(S.projectMemory.find(p=>p.id==='${prj.id}')),1);saveDB();render()}" style="padding:7px 10px;background:var(--bg-card);border:1px solid var(--brd);border-radius:8px;cursor:pointer;font-size:11px;color:var(--red);font-family:inherit;display:flex;align-items:center"><i data-lucide="trash-2" style="width:14px;height:14px"></i></button>
             </div>
           </div>`;
         }).join('')}

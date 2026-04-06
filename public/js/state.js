@@ -18,6 +18,23 @@ var S={
   envFalKey:false,envClaudeKey:false,dbStatus:'Yükleniyor...',
   hermesOpen:false,hermesModel:'nano2edit',hermesImg:null,hermesNote:'',hermesRunning:false,
   revizeOpen:false,revizeIdx:null,revizeNote:'',revizeRunning:false,
+  
+  // ── Yapılandırılmış Revize Sistemi ──
+  revizeStructured:{
+    active:false,
+    imageType:'',        // urun, banner, sosyal, sahne, diger
+    selectedArea:'',     // insan, urun, arkaplan, aksesuar, detay, diger
+    selectedAreaCustom:'',
+    problemType:'',      // anatomik, isik, kompozisyon, stil, kalite, diger
+    problemDetail:'',
+    desiredOutcome:'',   // sade, gercekci, profesyonel, minimal, diger
+    desiredOutcomeCustom:'',
+    maskCanvas:null,     // base64 mask data
+    maskPreview:null,    // preview url
+    generatedPrompt:'',  // template'den üretilen prompt
+    useInpainting:true   // sadece alan düzelt
+  },
+  revizeHistory:[],      // öğrenme için geçmiş kayıtlar
   vidSubMode:'i2v',
    t2vFlow: 'strategy',           // 'strategy' | 'template'
   videoTemplateFields: {},       // aktif field değerleri
@@ -58,24 +75,30 @@ function authHeaders(){
   var token=localStorage.getItem('hns_token');
   return token?{'Authorization':'Bearer '+token,'Content-Type':'application/json'}:{'Content-Type':'application/json'};
 }
+
 async function authFetch(url,opts){
   opts=opts||{};
   opts.headers=Object.assign({},authHeaders(),opts.headers||{});
   var res=await fetch(url,opts);
   if(res.status===401){
-    // Token süresi dolmuş — login'e yönlendir
+    // Token geçersiz - login sayfasına yönlendir
     localStorage.removeItem('hns_token');
     localStorage.removeItem('hns_refresh');
+    localStorage.removeItem('hns_user');
     window.location.href='/login.html';
     return res;
   }
   return res;
 }
 
+function logout(){
+  localStorage.removeItem('hns_token');
+  localStorage.removeItem('hns_refresh');
+  localStorage.removeItem('hns_user');
+  window.location.href='/login.html';
+}
+
 async function initApp(){
-  // Auth kontrolü
-  var token=localStorage.getItem('hns_token');
-  if(!token){window.location.href='/login.html';return;}
 
   setTimeout(checkFFmpegStatus, 1500);
   S.expandedPrompt=null;
@@ -104,6 +127,8 @@ async function initApp(){
     if(db.learningData)S.learningData=db.learningData;
     if(db.modelStats)S.modelStats=db.modelStats;
     if(db.projectMemory)S.projectMemory=db.projectMemory;
+    if(db.imgs)S.imgs=db.imgs;
+    if(db.conceptImgs)S.conceptImgs=db.conceptImgs;
     if(db.favImgModels&&db.favImgModels.length)S.favImgModels=db.favImgModels;
     if(db.favVidModels&&db.favVidModels.length)S.favVidModels=db.favVidModels;
     if(db.promptPool)S.promptPool=db.promptPool;
@@ -130,6 +155,9 @@ function saveDB(immediate=false){
     learningData:S.learningData,
     modelStats:S.modelStats,
     projectMemory:S.projectMemory,
+    revizeHistory:S.revizeHistory,
+    imgs:S.imgs,
+    conceptImgs:S.conceptImgs,
     favImgModels:S.favImgModels,favVidModels:S.favVidModels,
     promptPool:S.promptPool.slice(0,50),batch:S.batch,
     conceptBrief:S.conceptBrief,activeStrat:S.activeStrat,activeVidStrat:S.activeVidStrat

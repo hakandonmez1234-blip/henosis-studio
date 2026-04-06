@@ -71,17 +71,17 @@ function renderStudyo(){
       <div style="font-size:10px;font-weight:700;color:var(--tx-muted);letter-spacing:0.8px;margin-bottom:10px;text-transform:uppercase">Üretim Modu</div>
       <div style="display:flex;gap:0;border:1.5px solid var(--brd);border-radius:12px;overflow:hidden">
         <button onclick="S.studioMode='ref';saveDB();render()" style="flex:1;padding:10px 6px;border:none;cursor:pointer;font-size:10px;font-weight:700;font-family:inherit;transition:all 0.15s;background:${stMode==='ref'?'var(--ac-orange)':'var(--bg-elevated)'};color:${stMode==='ref'?'#fff':'var(--tx-muted)'}">
-          <div style="font-size:15px;margin-bottom:3px">📸</div>
+          <div style="font-size:15px;margin-bottom:3px;display:flex;align-items:center;justify-content:center"><i data-lucide="image" style="width:16px;height:16px"></i></div>
           Referanslı
           <div style="font-size:9px;font-weight:500;margin-top:2px;opacity:0.8">Görsel + prompt</div>
         </button>
         <button onclick="S.studioMode='t2i';saveDB();render()" style="flex:1;padding:10px 6px;border:none;cursor:pointer;font-size:10px;font-weight:700;font-family:inherit;transition:all 0.15s;border-left:1.5px solid var(--brd);background:${stMode==='t2i'?'var(--ac-orange)':'var(--bg-elevated)'};color:${stMode==='t2i'?'#fff':'var(--tx-muted)'}">
-          <div style="font-size:15px;margin-bottom:3px">✍️</div>
+          <div style="font-size:15px;margin-bottom:3px;display:flex;align-items:center;justify-content:center"><i data-lucide="type" style="width:16px;height:16px"></i></div>
           Text-to-Image
           <div style="font-size:9px;font-weight:500;margin-top:2px;opacity:0.8">Sadece prompt</div>
         </button>
         <button onclick="S.studioMode='video';saveDB();render()" style="flex:1;padding:10px 6px;border:none;cursor:pointer;font-size:10px;font-weight:700;font-family:inherit;transition:all 0.15s;border-left:1.5px solid var(--brd);background:${stMode==='video'?'var(--ac-orange)':'var(--bg-elevated)'};color:${stMode==='video'?'#fff':'var(--tx-muted)'}">
-          <div style="font-size:15px;margin-bottom:3px">🎬</div>
+          <div style="font-size:15px;margin-bottom:3px;display:flex;align-items:center;justify-content:center"><i data-lucide="film" style="width:16px;height:16px"></i></div>
           Video
           <div style="font-size:9px;font-weight:500;margin-top:2px;opacity:0.8">I2V veya T2V</div>
         </button>
@@ -122,8 +122,8 @@ function renderStudyo(){
       o += '<div style="margin-bottom:14px">'
         + '<div style="font-size:10px;font-weight:700;color:var(--tx-muted);letter-spacing:0.8px;margin-bottom:8px;text-transform:uppercase">Video Tipi</div>'
         + '<div style="display:flex;gap:0;border:1.5px solid var(--brd);border-radius:10px;overflow:hidden">'
-        + '<button onclick="S.studioVidSubMode=\'i2v\';saveDB();render()" style="flex:1;padding:9px 6px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;background:'+i2vActive+';color:'+i2vColor+'">📸 Görsel → Video (I2V)</button>'
-        + '<button onclick="S.studioVidSubMode=\'t2v\';saveDB();render()" style="flex:1;padding:9px 6px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;border-left:1.5px solid var(--brd);background:'+t2vActive+';color:'+t2vColor+'">✍️ Metin → Video (T2V)</button>'
+        + '<button onclick="S.studioVidSubMode=\'i2v\';saveDB();render()" style="flex:1;padding:9px 6px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;background:'+i2vActive+';color:'+i2vColor+'"><span style="display:flex;align-items:center;justify-content:center;gap:4px"><i data-lucide="image" style="width:14px;height:14px"></i> Görsel → Video (I2V)</span></button>'
+        + '<button onclick="S.studioVidSubMode=\'t2v\';saveDB();render()" style="flex:1;padding:9px 6px;border:none;cursor:pointer;font-size:11px;font-weight:700;font-family:inherit;border-left:1.5px solid var(--brd);background:'+t2vActive+';color:'+t2vColor+'"><span style="display:flex;align-items:center;justify-content:center;gap:4px"><i data-lucide="type" style="width:14px;height:14px"></i> Metin → Video (T2V)</span></button>'
         + '</div></div>';
 
       if(svSub==='i2v'){
