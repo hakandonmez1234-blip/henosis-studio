@@ -95,10 +95,22 @@ function logout(){
   localStorage.removeItem('hns_token');
   localStorage.removeItem('hns_refresh');
   localStorage.removeItem('hns_user');
+  window._hnsUserEmail = '';
   window.location.href='/login.html';
 }
 
+// Global erişim için
+window.doLogout = logout;
+
 async function initApp(){
+  // Kullanıcı bilgisini al
+  const userJson = localStorage.getItem('hns_user');
+  if (userJson) {
+    try {
+      const user = JSON.parse(userJson);
+      window._hnsUserEmail = user.email || '';
+    } catch(e) { window._hnsUserEmail = ''; }
+  }
 
   setTimeout(checkFFmpegStatus, 1500);
   S.expandedPrompt=null;

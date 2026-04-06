@@ -404,9 +404,44 @@
         return;
       }
 
+      // Kullanıcı onay durumunu kontrol et
+      const userId = data.user.id;
+      const { data: approvalData, error: approvalError } = await supabase
+        .from('user_approvals')
+        .select('status')
+        .eq('user_id', userId)
+        .single();
+
+      if (approvalError || !approvalData) {
+        // Onay kaydı yok - pending olarak oluştur
+        await supabase.from('user_approvals').insert([{
+          user_id: userId,
+          email: email,
+          status: 'pending',
+          created_at: new Date().toISOString()
+        }]);
+        showMsg('login-msg', 'error', 'Hesabınız admin onayı bekliyor. Lütfen daha sonra tekrar deneyin.');
+        setLoading('btn-login', false, 'Giriş Yap');
+        return;
+      }
+
+      if (approvalData.status === 'pending') {
+        showMsg('login-msg', 'error', 'Hesabınız henüz onaylanmadı. Admin onayı bekleniyor.');
+        setLoading('btn-login', false, 'Giriş Yap');
+        return;
+      }
+
+      if (approvalData.status === 'rejected') {
+        showMsg('login-msg', 'error', 'Hesabınız reddedildi. Erişim izniniz yok.');
+        setLoading('btn-login', false, 'Giriş Yap');
+        return;
+      }
+
+      // Onaylı kullanıcı - giriş yap
       localStorage.setItem('hns_token', data.session.access_token);
       localStorage.setItem('hns_refresh', data.session.refresh_token);
       localStorage.setItem('hns_user', JSON.stringify(data.user));
+      localStorage.setItem('hns_approved', 'true');
       window.location.href = '/';
     } catch (e) {
       console.error('Login hatası:', e);
@@ -458,13 +493,23 @@
         return;
       }
 
+      // Kullanıcı onay kaydı oluştur (pending)
+      if (data.user) {
+        await supabase.from('user_approvals').insert([{
+          user_id: data.user.id,
+          email: email,
+          status: 'pending',
+          created_at: new Date().toISOString()
+        }]);
+      }
+
       if (data.session) {
         localStorage.setItem('hns_token', data.session.access_token);
         localStorage.setItem('hns_refresh', data.session.refresh_token);
         localStorage.setItem('hns_user', JSON.stringify(data.user));
         window.location.href = '/';
       } else {
-        showMsg('register-msg', 'success', '✓ Kayıt başarılı! Lütfen e-postanızı kontrol edip onay linkine tıklayın. (Spam klasörünü de kontrol etmeyi unutmayın)');
+        showMsg('register-msg', 'success', '✓ Kayıt başarılı! E-posta onayından sonra admin onayı bekleyeceksiniz. Onaylandığında giriş yapabilirsiniz.');
         setLoading('btn-register', false, 'Kayıt Ol');
       }
     } catch (e) {

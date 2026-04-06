@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Henosis Admin — Kullanıcı Onayları</title>
+<script src="https://unpkg.com/@supabase/supabase-js@2.47.10/dist/umd/supabase.js"></script>
+<style>
+  :root {
+    --bg-main: #F5F1EB;
+    --bg-card: #FFFFFF;
+    --bg-elev: #EDE8E0;
+    --brd: #D8D3CC;
+    --tx-main: #2C2419;
+    --tx-muted: #6B6255;
+    --accent: #D4704A;
+    --success: #4A8A5A;
+    --danger: #C95050;
+    --warning: #D4A04A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-main);
+    color: var(--tx-main);
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--tx-muted);
+    margin-bottom: 32px;
+  }
+  .stats {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-box {
+    background: var(--bg-card);
+    border: 1px solid var(--brd);
+    border-radius: 12px;
+    padding: 16px 24px;
+    flex: 1;
+    text-align: center;
+  }
+  .stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 12px;
+    color: var(--tx-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .filter-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--brd);
+    background: var(--bg-card);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .filter-btn.active {
+    background: var(--tx-main);
+    color: white;
+    border-color: var(--tx-main);
+  }
+  .user-list {
+    background: var(--bg-card);
+    border: 1px solid var(--brd);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .user-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--brd);
+  }
+  .user-item:last-child {
+    border-bottom: none;
+  }
+  .user-info {
+    flex: 1;
+  }
+  .user-email {
+    font-weight: 600;
+    font-size: 14px;
+  }
+  .user-date {
+    font-size: 12px;
+    color: var(--tx-muted);
+    margin-top: 4px;
+  }
+  .status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .status-pending {
+    background: #FFF3E0;
+    color: var(--warning);
+  }
+  .status-approved {
+    background: #E8F5E9;
+    color: var(--success);
+  }
+  .status-rejected {
+    background: #FFEBEE;
+    color: var(--danger);
+  }
+  .user-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: 16px;
+  }
+  .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-approve {
+    background: var(--success);
+    color: white;
+  }
+  .btn-approve:hover {
+    opacity: 0.9;
+  }
+  .btn-reject {
+    background: var(--danger);
+    color: white;
+  }
+  .btn-reject:hover {
+    opacity: 0.9;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--tx-muted);
+  }
+  .loading {
+    text-align: center;
+    padding: 40px;
+  }
+  .spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--brd);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  .login-form {
+    max-width: 400px;
+    margin: 100px auto;
+    background: var(--bg-card);
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--brd);
+    text-align: center;
+  }
+  .login-form h2 {
+    margin-bottom: 20px;
+  }
+  .login-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--brd);
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .login-form button {
+    width: 100%;
+    padding: 12px;
+    background: var(--tx-main);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .hidden {
+    display: none !important;
+  }
+</style>
+</head>
+<body>
+
+<div id="login-section" class="login-form">
+  <h2>Admin Girişi</h2>
+  <p style="color: var(--tx-muted); margin-bottom: 20px;">Sadece yetkili admin kullanıcılar</p>
+  <input type="email" id="admin-email" placeholder="Admin e-posta">
+  <input type="password" id="admin-password" placeholder="Şifre">
+  <button onclick="adminLogin()">Giriş Yap</button>
+  <div id="login-error" style="color: var(--danger); margin-top: 12px; font-size: 13px;"></div>
+</div>
+
+<div id="admin-section" class="container hidden">
+  <h1>👤 Kullanıcı Onayları</h1>
+  <p class="subtitle">Kayıt olan kullanıcıları onayla veya reddet</p>
+  
+  <div class="stats">
+    <div class="stat-box">
+      <div class="stat-number" id="stat-pending">0</div>
+      <div class="stat-label">Bekleyen</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="stat-approved">0</div>
+      <div class="stat-label">Onaylı</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="stat-rejected">0</div>
+      <div class="stat-label">Reddedilmiş</div>
+    </div>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="filter-btn active" onclick="setFilter('all')">Tümü</button>
+    <button class="filter-btn" onclick="setFilter('pending')">Bekleyen</button>
+    <button class="filter-btn" onclick="setFilter('approved')">Onaylı</button>
+    <button class="filter-btn" onclick="setFilter('rejected')">Reddedilmiş</button>
+  </div>
+
+  <div class="user-list" id="user-list">
+    <div class="loading">
+      <div class="spinner"></div>
+      <p style="margin-top: 12px; color: var(--tx-muted);">Yükleniyor...</p>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://ekvsjeqcjqrlubpzrjbf.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVrdnNqZXFjanFybHVicHpyamJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0MzQ5MDAsImV4cCI6MjA5MTAxMDkwMH0.Gvz3k9Jx2lUgFJgueibQcG_RU7H5gIBgp5Rau2lASoo';
+  
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+  let currentUser = null;
+  let allUsers = [];
+  let currentFilter = 'all';
+
+  async function adminLogin() {
+    const email = document.getElementById('admin-email').value.trim();
+    const password = document.getElementById('admin-password').value;
+    const errorDiv = document.getElementById('login-error');
+    
+    if (!email || !password) {
+      errorDiv.textContent = 'E-posta ve şifre gerekli';
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        errorDiv.textContent = 'Giriş başarısız: ' + error.message;
+        return;
+      }
+
+      // Admin kontrolü - sadece senin e-postan admin olabilir
+      const adminEmails = ['hakandonmez1234@gmail.com']; // Buraya admin e-postalarını ekle
+      
+      if (!adminEmails.includes(data.user.email)) {
+        errorDiv.textContent = 'Bu hesap admin yetkisine sahip değil';
+        await supabase.auth.signOut();
+        return;
+      }
+
+      currentUser = data.user;
+      document.getElementById('login-section').classList.add('hidden');
+      document.getElementById('admin-section').classList.remove('hidden');
+      
+      loadUsers();
+    } catch (e) {
+      errorDiv.textContent = 'Bir hata oluştu';
+      console.error(e);
+    }
+  }
+
+  async function loadUsers() {
+    try {
+      const { data, error } = await supabase
+        .from('user_approvals')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Kullanıcılar yüklenemedi:', error);
+        document.getElementById('user-list').innerHTML = `
+          <div class="empty-state">
+            <p>Supabase'de 'user_approvals' tablosu bulunamadı.</p>
+            <p style="margin-top: 12px; font-size: 13px;">
+              Lütfen Supabase Dashboard → Table Editor'de şu tabloyu oluşturun:
+            </p>
+            <pre style="text-align: left; background: #f5f5f5; padding: 16px; border-radius: 8px; margin-top: 12px; font-size: 12px; overflow-x: auto;">
+table: user_approvals
+columns:
+  - user_id (uuid, primary key)
+  - email (text)
+  - status (text) - pending/approved/rejected
+  - created_at (timestamp)
+  - updated_at (timestamp)
+            </pre>
+          </div>
+        `;
+        return;
+      }
+
+      allUsers = data || [];
+      updateStats();
+      renderUsers();
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  function updateStats() {
+    const pending = allUsers.filter(u => u.status === 'pending').length;
+    const approved = allUsers.filter(u => u.status === 'approved').length;
+    const rejected = allUsers.filter(u => u.status === 'rejected').length;
+    
+    document.getElementById('stat-pending').textContent = pending;
+    document.getElementById('stat-approved').textContent = approved;
+    document.getElementById('stat-rejected').textContent = rejected;
+  }
+
+  function setFilter(filter) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.textContent.toLowerCase().includes(filter === 'all' ? 'tüm' : filter)) {
+        btn.classList.add('active');
+      }
+    });
+    renderUsers();
+  }
+
+  function renderUsers() {
+    const listEl = document.getElementById('user-list');
+    
+    let filtered = allUsers;
+    if (currentFilter !== 'all') {
+      filtered = allUsers.filter(u => u.status === currentFilter);
+    }
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `
+        <div class="empty-state">
+          <p>Bu kriterde kullanıcı bulunamadı</p>
+        </div>
+      `;
+      return;
+    }
+
+    listEl.innerHTML = filtered.map(user => {
+      const date = new Date(user.created_at).toLocaleDateString('tr-TR');
+      const statusClass = `status-${user.status}`;
+      const statusText = {
+        'pending': 'Bekliyor',
+        'approved': 'Onaylı',
+        'rejected': 'Reddedildi'
+      }[user.status];
+
+      return `
+        <div class="user-item">
+          <div class="user-info">
+            <div class="user-email">${user.email}</div>
+            <div class="user-date">Kayıt: ${date}</div>
+          </div>
+          <span class="status-badge ${statusClass}">${statusText}</span>
+          <div class="user-actions">
+            ${user.status !== 'approved' ? `<button class="btn btn-approve" onclick="updateStatus('${user.user_id}', 'approved')">Onayla</button>` : ''}
+            ${user.status !== 'rejected' ? `<button class="btn btn-reject" onclick="updateStatus('${user.user_id}', 'rejected')">Reddet</button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function updateStatus(userId, status) {
+    try {
+      const { error } = await supabase
+        .from('user_approvals')
+        .update({ 
+          status: status,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Güncelleme hatası:', error);
+        alert('Güncelleme başarısız: ' + error.message);
+        return;
+      }
+
+      // Yeniden yükle
+      await loadUsers();
+    } catch (e) {
+      console.error(e);
+      alert('Bir hata oluştu');
+    }
+  }
+
+  // Sayfa yüklendiğinde otomatik giriş kontrolü
+  (async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const adminEmails = ['hakandonmez1234@gmail.com'];
+      if (adminEmails.includes(session.user.email)) {
+        currentUser = session.user;
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('admin-section').classList.remove('hidden');
+        loadUsers();
+      }
+    }
+  })();
+</script>
+
+</body>
+</html>
