@@ -331,12 +331,13 @@ async function generatePrompts(){
       let txt=stratInstruction+focusRule+
         '\n\nWrite ONE English photography prompt, 150–220 words. Use {isim} for product name. Output ONLY the prompt paragraph — no titles, no explanations, no quotes.'+varHint;
       let p=callLLM(txt,imgUrls,sysOver).then(res=>{
+        let stratLabelName = (sceneInterp && sceneInterp.suggestedStrategy) ? ('Sahne→'+strat.name) : strat.name;
         S.promptPool.unshift({
           id:genPromptId(),
           text:res,
           selected:false,
           prodActive:true,
-          stratName:scenMatched?('Sahne→'+strat.name):strat.name,
+          stratName:stratLabelName,
           color:strat.color,
           type:'image',
           userInput:imgBrief,
